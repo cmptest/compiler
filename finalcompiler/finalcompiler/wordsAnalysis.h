@@ -6,14 +6,17 @@
 #include <sstream>
 #include <vector>
 #include <map>
+#include <regex>
 using namespace std;
 
 struct Token {
-	int num;      //内部编码
+	int num;      //内部编码,为-1代表错误
 	string value; //内码值
-	Token(int _num, string _value) {
+	int col;
+	Token(int _num, string _value,int _col) {
 		num = _num;
 		value = _value;
+		col = _col;
 	}
 };
 

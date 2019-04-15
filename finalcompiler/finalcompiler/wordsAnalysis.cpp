@@ -29,9 +29,8 @@ vector<Token> wordsAnalysis(string filepath, bool is_store) {
 					i++;
 					if (s[i] == '\n') col++;
 				}
-				if (i == n - 2) {
-					cout << "为找到与/*相应的*/" << endl; return v;
-				}
+				if (i == n - 2) 
+					v.push_back(Token(-1, "未找到与/*相应的*/",col));
 				continue;
 			}
 			else if (t == "//") {
@@ -40,69 +39,48 @@ vector<Token> wordsAnalysis(string filepath, bool is_store) {
 				col++;
 				continue;
 			}
-			else if (t == "++") v.push_back(Token(57, "++")), i+=2;
-			else if (t == "--") v.push_back(Token(56, "--")), i += 2;
-			else if (t == "+=") v.push_back(Token(29, "+=")), i += 2;
-			else if (t == "-=") v.push_back(Token(31, "-=")), i += 2;
-			else if (t == "*=") v.push_back(Token(33, "*=")), i += 2;
-			else if (t == "/=") v.push_back(Token(35, "/=")), i += 2;
-			else if (t == "==") v.push_back(Token(37, "==")), i += 2;
-			else if (t == ">=") v.push_back(Token(39, ">=")), i += 2;
-			else if (t == ">>") v.push_back(Token(40, ">>")), i += 2;
-			else if (t == "<=") v.push_back(Token(42, "<=")), i += 2;
-			else if (t == "<<") v.push_back(Token(43, "<<")), i += 2;
+			else if (t == "++") v.push_back(Token(57, "++",col)), i+=2;
+			else if (t == "--") v.push_back(Token(56, "--",col)), i += 2;
+			else if (t == "+=") v.push_back(Token(29, "+=",col)), i += 2;
+			else if (t == "-=") v.push_back(Token(31, "-=",col)), i += 2;
+			else if (t == "*=") v.push_back(Token(33, "*=",col)), i += 2;
+			else if (t == "/=") v.push_back(Token(35, "/=",col)), i += 2;
+			else if (t == "==") v.push_back(Token(37, "==",col)), i += 2;
+			else if (t == ">=") v.push_back(Token(39, ">=",col)), i += 2;
+			else if (t == ">>") v.push_back(Token(40, ">>",col)), i += 2;
+			else if (t == "<=") v.push_back(Token(42, "<=",col)), i += 2;
+			else if (t == "<<") v.push_back(Token(43, "<<",col)), i += 2;
 		}
 
 		if (isalpha(s[i]) || s[i] == '_') {
 			string t(1, s[i++]);
 			while (isalnum(s[i]) || s[i] == '_') t += s[i++];
 			i--;
-			if (m.count(t)) v.push_back(Token(m[t], t));
-			else v.push_back(Token(1, t));
+			if (m.count(t)) v.push_back(Token(m[t], t,col));
+			else v.push_back(Token(1, t,col));
 		}
 		else if (isdigit(s[i])) {
-			double t = s[i++] - '0';
-			int numlen = 1;
-			while (isdigit(s[i]))
-				t = t * 10 + s[i++] - '0', numlen++;
-			if (s[i] == '.') {
-				double num = 10;
-				i++, numlen++;
-				while (isdigit(s[i])) {
-					t += (s[i++] - '0') / num;
-					num *= 10;
-					numlen++;
-				}
-				if (isalpha(s[i])) {
-					cout <<"在第" << col++ << "行无法识别" << to_string(t).substr(0,numlen) + s[i] << "为字符串或数字" << endl;
-					return v;
-				}
-				v.push_back(Token(2,to_string(t)));
-			}
-			else if (isalpha(s[i])) {
-				cout << "在第" << col++ << "行无法识别" << to_string(t).substr(0, numlen) + s[i] << "为字符串或数字" << endl;
-				return v;
-			}
-			else v.push_back(Token(2, to_string(int(t))));
-			i--;
+			string t(1, s[i++]);
+			while (isalnum(s[i]) || s[i] == '_' || s[i] == '.') t += s[i++];
+			regex r("\\w+day");
 		}
-		else if (s[i] == ',') v.push_back(Token(44, ","));
-		else if (s[i] == ';') v.push_back(Token(45, ";"));
-		else if (s[i] == '(') v.push_back(Token(46, "("));
-		else if (s[i] == ')') v.push_back(Token(47, ")"));
-		else if (s[i] == '{') v.push_back(Token(48, "{"));
-		else if (s[i] == '}') v.push_back(Token(49, "}"));
-		else if (s[i] == '[') v.push_back(Token(50, "["));
-		else if (s[i] == ']') v.push_back(Token(51, "]"));
-		else if (s[i] == '\'') v.push_back(Token(52, "\'"));
-		else if (s[i] == '\"') v.push_back(Token(53, "\""));
-		else if (s[i] == '+') v.push_back(Token(28, "+"));
-		else if (s[i] == '-') v.push_back(Token(30, "-"));
-		else if (s[i] == '*') v.push_back(Token(32, "*"));
-		else if (s[i] == '/') v.push_back(Token(34, "/"));
-		else if (s[i] == '>') v.push_back(Token(38, ">"));
-		else if (s[i] == '<') v.push_back(Token(41, "<"));
-		else if (s[i] == '=') v.push_back(Token(36, "="));
+		else if (s[i] == ',') v.push_back(Token(44, ",",col));
+		else if (s[i] == ';') v.push_back(Token(45, ";",col));
+		else if (s[i] == '(') v.push_back(Token(46, "(",col));
+		else if (s[i] == ')') v.push_back(Token(47, ")",col));
+		else if (s[i] == '{') v.push_back(Token(48, "{",col));
+		else if (s[i] == '}') v.push_back(Token(49, "}",col));
+		else if (s[i] == '[') v.push_back(Token(50, "[",col));
+		else if (s[i] == ']') v.push_back(Token(51, "]",col));
+		else if (s[i] == '\'') v.push_back(Token(52, "\'",col));
+		else if (s[i] == '\"') v.push_back(Token(53, "\"",col));
+		else if (s[i] == '+') v.push_back(Token(28, "+",col));
+		else if (s[i] == '-') v.push_back(Token(30, "-",col));
+		else if (s[i] == '*') v.push_back(Token(32, "*",col));
+		else if (s[i] == '/') v.push_back(Token(34, "/",col));
+		else if (s[i] == '>') v.push_back(Token(38, ">",col));
+		else if (s[i] == '<') v.push_back(Token(41, "<",col));
+		else if (s[i] == '=') v.push_back(Token(36, "=",col));
 	}
 
 	if (is_store) {
