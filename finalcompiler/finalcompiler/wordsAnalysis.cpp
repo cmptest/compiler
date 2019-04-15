@@ -19,6 +19,7 @@ vector<Token> wordsAnalysis(string filepath, bool is_store) {
 	int n = s.length();
 	int col = 1;
 	for (int i = 0; i <n; i++) {
+
 		if (s[i] == '\n') {col++; continue;}
 		else if (s[i] == ' '||s[i] == '\t') continue;
 		//ÌÞ³ý×¢ÊÍ£¬// ºÍ/* */
