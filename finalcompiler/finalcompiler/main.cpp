@@ -1,7 +1,7 @@
-#include<iostream>
+#include "wordsAnalysis.h"
 using namespace std;
 
 int main() {
-	cout << "hello world!" << endl;
+	wordsAnalysis("source.txt", true);
 	return 0;
 }
