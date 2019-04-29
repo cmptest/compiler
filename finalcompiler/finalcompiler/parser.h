@@ -11,6 +11,7 @@
 #include <stack>
 #include <fstream>
 #include <sstream>
+#include <iterator>
 using namespace std;
 
 /*
@@ -21,7 +22,7 @@ using namespace std;
 struct node
 {
 	string left;
-	string right[100];
+	vector<string>right;
 };
 
 
@@ -39,6 +40,7 @@ protected:
 	set<string>non_term;//非终结符号
 
 public:
+
 
 	void scan_grammer(string filePath);//读取文法;
 
