@@ -12,6 +12,7 @@
 #include <fstream>
 #include <sstream>
 #include <iterator>
+#include <iomanip>
 using namespace std;
 
 /*
@@ -28,7 +29,7 @@ struct node
 
 class Base{
 
-protected:
+private:
 	int grammer_num;//文法数量
 
 	node grammer[400]; //文法
@@ -38,6 +39,11 @@ protected:
 
 	set<string>term;//终结符号
 	set<string>non_term;//非终结符号
+
+	map<pair<string, string>, int>analysisTable;//分析表
+
+	int row = 30;
+	int col = 30;
 
 public:
 
@@ -49,11 +55,15 @@ public:
 	void set_first(string target);//求出指定非终结符号的first集
 	void set_follow(string target);//求出指定非终结符号的follow集
 
-	set<string> get_first(string target);//获得指定符号的first集
-	set<string> get_follow(string target);//获得指定符号的follow集
-
 	void display_first();//打印first集
 	void display_follow();//打印follow集
+	void display_table();//打印分析表
+
+	map<pair<string, string>, int> getTable();//构造分析表
+
+	bool analysis_Exp(vector<string> s);//分析符号串
+
+	void parser();//语法分析
 };
 
 

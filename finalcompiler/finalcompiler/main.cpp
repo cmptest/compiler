@@ -7,7 +7,7 @@ Base base;
 int main() {
 	//wordsAnalysis("source.txt", true);
 	
-	base.scan_grammer("grammer.txt");
+	base.parser();
 	
 
 	return 0;
