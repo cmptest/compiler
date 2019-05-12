@@ -1,0 +1,23 @@
+文法first集如下：
+<MainReturnType>     first集：          int void 
+<alpha>              first集：          A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z 
+<dataType>           first集：          float int 
+<declaration>        first集：          float int 
+<digit>              first集：          0 1 2 3 4 5 6 7 8 9 
+<jump>               first集：          return 
+<num>                first集：          0 1 2 3 4 5 6 7 8 9 
+<program>            first集：          int void 
+<statements>         first集：          @ float int return 
+<variable>           first集：          A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h i j k l m n o p q r s t u v w x y z 
++------------------------------------------------------------------------------------------------------------------------------------------+
+
+文法follow集如下：
+<MainReturnType>     follow集：         main 
+<alpha>              follow集：         A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h i j k l m n o p q r s t u v w x y z 
+<dataType>           follow集：         A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h i j k l m n o p q r s t u v w x y z 
+<declaration>        follow集：         @ float int return 
+<digit>              follow集：         ; 
+<num>                follow集：         0 1 2 3 4 5 6 7 8 9 
+<program>            follow集：         $ 
+<statements>         follow集：         } 
+<variable>           follow集：         = 

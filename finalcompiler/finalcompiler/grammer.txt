@@ -1,5 +1,6 @@
-<program> -> int main ( ) { <statements> } | void main ( ) { <statements> }
-<statements> -> <declaration> | <jump> | @
+<program> -> <MainReturnType> main ( ) { <statements> }
+<MainReturnType> -> int | void
+<statements> -> <declaration> <statements> | <jump> | @
 <declaration> -> <dataType> <variable> = <digit> ;
 <dataType> -> int | float
 <variable> -> _ <alpha> <variable> | <alpha> <variable> | <alpha>

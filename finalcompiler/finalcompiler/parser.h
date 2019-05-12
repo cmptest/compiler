@@ -13,6 +13,7 @@
 #include <sstream>
 #include <iterator>
 #include <iomanip>
+#include "wordsAnalysis.h"
 using namespace std;
 
 /*
@@ -25,6 +26,8 @@ struct node
 	string left;
 	vector<string>right;
 };
+
+
 
 
 class Base{
@@ -55,15 +58,16 @@ public:
 	void set_first(string target);//求出指定非终结符号的first集
 	void set_follow(string target);//求出指定非终结符号的follow集
 
-	void display_first();//打印first集
-	void display_follow();//打印follow集
-	void display_table();//打印分析表
+	void display_firstAndFollow();//打印first集
+	//void display_table();//打印分析表
 
 	map<pair<string, string>, int> getTable();//构造分析表
 
-	bool analysis_Exp(vector<string> s);//分析符号串
+	int analysis_Exp(vector<Token> s);//分析符号串，正确则返回0，错误则返回行号
 
-	void parser();//语法分析
+	void parser(vector<Token> tokenList);//接收词法分析的token，进行语法分析
+
+
 };
 
 

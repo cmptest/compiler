@@ -1,8 +1,8 @@
 #include "wordsAnalysis.h"
 map<string, int> m;//保存keyword得hashmap
-
+const int keywordnum = 24;
 const string keyword[] = { "break","case","char","const","continue","default","do","double","else","enum",
-"extern","float","for","if","int","long","retrun","short","sizeof","static","struct","switch","void"
+"extern","float","for","if","int","long","return","short","sizeof","static","struct","switch","void"
 "unsigned","while" };
 string scanffile(string filepath) {
 	return NULL;
@@ -14,8 +14,9 @@ vector<Token> wordsAnalysis(string filepath, bool is_store) {
 	string s = buffer.str();
 	vector<Token> v;
 	//初始化map
-	for (int i = 0; i < keyword->length(); i++) 
+	for (int i = 0; i < keywordnum; i++)
 		m[keyword[i]] = i + 2;
+
 	int n = s.length();
 	int col = 1;
 	for (int i = 0; i <n; i++) {
@@ -62,8 +63,22 @@ vector<Token> wordsAnalysis(string filepath, bool is_store) {
 		}
 		else if (isdigit(s[i])) {
 			string t(1, s[i++]);
-			while (isalnum(s[i]) || s[i] == '_' || s[i] == '.') t += s[i++];
-			regex r("\\w+day");
+			/*while (isalnum(s[i]) || s[i] == '_' || s[i] == '.') t += s[i++];
+			regex r("\\w+day");*/
+
+			int dotnum = 0;//小数点个数
+			while (isdigit(s[i]) || s[i]=='.')
+			{
+				if (s[i] == '.') {
+					dotnum++;
+				}
+				t += s[i++];
+			}
+			i--;
+			if (dotnum == 0 || dotnum == 1) {
+				v.push_back(Token(1, t, col));
+			}else
+				v.push_back(Token(-1, "数字出错", col));
 		}
 		else if (s[i] == ',') v.push_back(Token(44, ",",col));
 		else if (s[i] == ';') v.push_back(Token(45, ";",col));
@@ -86,9 +101,10 @@ vector<Token> wordsAnalysis(string filepath, bool is_store) {
 
 	if (is_store) {
 		ofstream fout;
-		fout.open("test.txt");
+		fout.open("words.txt");
+		fout << "行号" << "\t" << "TOKEN" << endl;
 		for (int i = 0; i < v.size(); i++)
-			fout << '<' << v[i].num << ',' << v[i].value << '>' << endl;
+			fout<<v[i].col << "\t" << '<' << v[i].num << ',' << v[i].value << '>' << endl;
 	}
 	return v;
 }

@@ -123,6 +123,12 @@
     <ClInclude Include="parser.h" />
     <ClInclude Include="wordsAnalysis.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="code.txt" />
+    <Text Include="FirstAndFollow.txt" />
+    <Text Include="grammer.txt" />
+    <Text Include="words.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

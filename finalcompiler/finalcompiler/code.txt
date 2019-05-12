@@ -1,0 +1,12 @@
+int main() {
+	/*jjjj
+
+
+*/
+	//jjjj
+
+	int a = 8;
+	int b = 3=l;
+
+	return 0;
+}

@@ -1,14 +1,12 @@
-#include "wordsAnalysis.h"
 #include "parser.h"
 using namespace std;
 
 Base base;
 
 int main() {
-	//wordsAnalysis("source.txt", true);
+	vector<Token> tokenList = wordsAnalysis("code.txt", true);
 	
-	base.parser();
-	
+	base.parser(tokenList);
 
 	return 0;
 }

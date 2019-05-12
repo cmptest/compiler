@@ -95,15 +95,7 @@ void Base::scan_grammer(string filePath) {
 		}
 		cout << endl;
 	}*/
-	
-	
-
-
-
-
-	
-
-	
+		
 }
 
 
@@ -156,15 +148,27 @@ void Base::set_first(string target) {
 
 /**
   * function   : display_first()
-  * description: 这个方法用于打印first集
+  * description: 这个方法用于打印first集和follow集
   */
-void Base::display_first() {
+void Base::display_firstAndFollow() {
+	ofstream fout;
+	fout.open("FirstAndFollow.txt");
+	fout << "文法first集如下：\n";
 	for (map<string, set<string>>::iterator it = first_set.begin(); it != first_set.end(); it++) {
-		cout << (*it).first << " first集：";
+		fout<< std::left<<setw(20) << (*it).first << setw(20) << " first集：";
 		for (set<string>::iterator it2 = first_set[(*it).first].begin(); it2 != first_set[(*it).first].end(); it2++) {
-			cout << *it2 << " ";
+			fout << *it2 << " ";
 		}
-		cout << endl;
+		fout << endl;
+	}
+	fout << "+------------------------------------------------------------------------------------------------------------------------------------------+\n\n";
+	fout << "文法follow集如下：\n";
+	for (map<string, set<string>>::iterator it = follow_set.begin(); it != follow_set.end(); it++) {
+		fout << std::left << setw(20) << (*it).first <<setw(20) <<" follow集：";
+		for (set<string>::iterator it2 = follow_set[(*it).first].begin(); it2 != follow_set[(*it).first].end(); it2++) {
+			fout << *it2 << " ";
+		}
+		fout << endl;
 	}
 }
 
@@ -205,7 +209,7 @@ void Base::set_follow(string target) {
 						set_union(follow_set[*it].begin(), follow_set[*it].end(), first_set[*it2].begin(), first_set[*it2].end(), inserter(follow_set[*it], follow_set[*it].begin())); // 求并集
 						break;
 					}
-					else {
+					else {						
 						set_union(follow_set[*it].begin(), follow_set[*it].end(), first_set[*it2].begin(), first_set[*it2].end(), inserter(follow_set[*it], follow_set[*it].begin())); // 求并集
 						follow_set[*it].emplace("@");
 					}
@@ -213,22 +217,12 @@ void Base::set_follow(string target) {
 			}
 
 		}
+		if (grammer[i].left == "<program>")
+			follow_set["<program>"].insert("$");
 	}
 }
 
-/**
-  * function   : display_follow()
-  * description: 这个方法用于打印follow集
-  */
-void Base::display_follow() {
-	for (map<string, set<string>>::iterator it = follow_set.begin(); it != follow_set.end(); it++) {
-		cout << (*it).first << " follow集：";
-		for (set<string>::iterator it2 = follow_set[(*it).first].begin(); it2 != follow_set[(*it).first].end(); it2++) {
-			cout << *it2 << " ";
-		}
-		cout << endl;
-	}
-}
+
 
 
 
@@ -327,19 +321,21 @@ map<pair<string, string>, int> Base::getTable() {
 
 /**
   * function   : analysis_Exp()
-  * description: 这个方法利用栈分析符号串是否符合语法规范
-  * return	   : boolean
+  * description: 这个方法利用栈分析符号串是否符合语法规范，正确返回0，错误返回行号
+  * return	   : int
   * param	   : s
   */
-bool Base::analysis_Exp(vector<string> s) {//分析符号串
+int Base::analysis_Exp(vector<Token> s) {//分析符号串
 	stack<string> left;
 	int index = 0;
-	
+
+	s.push_back(Token(0, "$", s[s.size() - 1].col));
+	left.push("$");
 	left.push("<program>");
 
-	while (index<s.size()) 
+	while (index < s.size()) 
 	{
-		string exp = s[index]; 
+		string exp = s[index].value; 
 		string leftTop = left.top();
 
 		pair<string, string>temp;
@@ -365,13 +361,24 @@ bool Base::analysis_Exp(vector<string> s) {//分析符号串
 			}
 		}
 		else {
-			return false;
+			return s[index].col;
 		}
 	}
 
 	if (left.empty())
-		return true;
+		return 0;
+	
 }
+
+
+
+//vector<string> Base::acceptWords(string filePath) {
+//	ifstream t(filePath);
+//	string line = "";
+//	while (getline(t, line)) //逐行读取属性字
+//	{
+//}
+
 
 
 
@@ -379,21 +386,23 @@ bool Base::analysis_Exp(vector<string> s) {//分析符号串
   * function   : parser()
   * description: 语法分析
   */
-void Base::parser() {
+void Base::parser(vector<Token> tokenList) {
 	scan_grammer("grammer.txt");//扫描文法
-	for (int i = 0; i < grammer_num; i++) {//求first集和follow集
-		set_first(grammer[i].left);
+	for (int i = 0; i < grammer_num; i++) {//求first集
+		set_first(grammer[i].left);		
+	}
+	for (int i = 0; i < grammer_num; i++) {//求follow集
 		set_follow(grammer[i].left);
 	}
+	
+	display_firstAndFollow();//打印first集和follow集
 
 	map<pair<string, string>, int> table = getTable();//构建符号表
-	vector<string> s;
-	s.push_back("int"); s.push_back("main"); s.push_back("("); s.push_back(")"); s.push_back("{"); 
-	s.push_back("int"); s.push_back("a"); s.push_back("="); s.push_back("4"); s.push_back(";"); s.push_back("}");
-	bool flag = analysis_Exp(s);//分析
-	if (flag) {
+	
+	int flag = analysis_Exp(tokenList);//分析
+	if (flag==0) {
 		cout <<  "符合语法规范" << endl;
 	}
 	else
-		cout << "不符合语法规范" << endl;
+		cout<<"第"<<flag<<"行不符合语法规范" << endl;
 }
