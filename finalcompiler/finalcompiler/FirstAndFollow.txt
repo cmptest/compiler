@@ -1,23 +1,46 @@
 文法first集如下：
-<MainReturnType>     first集：          int void 
-<alpha>              first集：          A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z 
-<dataType>           first集：          float int 
-<declaration>        first集：          float int 
-<digit>              first集：          0 1 2 3 4 5 6 7 8 9 
-<jump>               first集：          return 
-<num>                first集：          0 1 2 3 4 5 6 7 8 9 
-<program>            first集：          int void 
-<statements>         first集：          @ float int return 
-<variable>           first集：          A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h i j k l m n o p q r s t u v w x y z 
+<assignments>             first集：           A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h j k l m n o p q r t u v w x y z 
+<comparisonOperator>      first集：          < <= == > >= 
+<conditionalStatement>    first集：          if 
+<constant>                first集：          0 1 2 3 4 5 6 7 8 9 < 
+<constantTemp>            first集：          0 1 2 3 4 5 6 7 8 9 < 
+<dataType>                first集：          char double float int long short 
+<declareStatement>        first集：           A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c char d double e f float g h int j k l long m n o p q r short t u v w x y z 
+<digit>                   first集：          0 1 2 3 4 5 6 7 8 9 
+<else>                    first集：          @ else 
+<elseif>                  first集：          @ else 
+<expression>              first集：           ( 0 1 2 3 4 5 6 7 8 9 < A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h j k l m n o p q r t u v w x y z 
+<expression’>            first集：          + - @ 
+<expression’’>          first集：          < <= == > >= @ 
+<factor>                  first集：           ( 0 1 2 3 4 5 6 7 8 9 < A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h j k l m n o p q r t u v w x y z 
+<jumpStatement>           first集：           break continue 
+<letter>                  first集：           A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h j k l m n o p q r t u v w x y z 
+<loopStatement>           first集：          while 
+<mainReturnDataType>      first集：          int void 
+<program>                 first集：          int void 
+<statement>               first集：            break A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c char continue d double e f float g h if int j k l long m n o p q r short t u v w while x y z 
+<statements>              first集：            break @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c char continue d double e f float g h if int j k l long m n o p q r short t u v w while x y z 
+<term>                    first集：           ( 0 1 2 3 4 5 6 7 8 9 < A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h j k l m n o p q r t u v w x y z 
+<term’>                  first集：          * / @ 
+<variable>                first集：           A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h j k l m n o p q r t u v w x y z 
+<variableAndConstant>     first集：           0 1 2 3 4 5 6 7 8 9 < A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h j k l m n o p q r t u v w x y z 
+<variableTemp>            first集：           0 1 2 3 4 5 6 7 8 9 @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h j k l m n o p q r t u v w x y z 
 +------------------------------------------------------------------------------------------------------------------------------------------+
 
 文法follow集如下：
-<MainReturnType>     follow集：         main 
-<alpha>              follow集：         A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h i j k l m n o p q r s t u v w x y z 
-<dataType>           follow集：         A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h i j k l m n o p q r s t u v w x y z 
-<declaration>        follow集：         @ float int return 
-<digit>              follow集：         ; 
-<num>                follow集：         0 1 2 3 4 5 6 7 8 9 
-<program>            follow集：         $ 
-<statements>         follow集：         } 
-<variable>           follow集：         = 
+<comparisonOperator>      follow集：          ( 0 1 2 3 4 5 6 7 8 9 < A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h j k l m n o p q r t u v w x y z 
+<constant>                follow集：          
+<constantTemp>            follow集：         . 
+<dataType>                follow集：          A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h j k l m n o p q r t u v w x y z 
+<digit>                   follow集：          0 1 2 3 4 5 6 7 8 9 @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h j k l m n o p q r t u v w x y z 
+<elseif>                  follow集：         @ else 
+<expression>              follow集：         ) , ; < <= == > >= @ 
+<expression’>            follow集：         < <= == > >= @ 
+<factor>                  follow集：         * / @ 
+<letter>                  follow集：          0 1 2 3 4 5 6 7 8 9 @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c d e f g h j k l m n o p q r t u v w x y z 
+<mainReturnDataType>      follow集：         main 
+<program>                 follow集：         $ 
+<statement>               follow集：           break @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ a b c char continue d double e f float g h if int j k l long m n o p q r short t u v w while x y z 
+<statements>              follow集：         } 
+<term>                    follow集：         + - < <= == > >= @ 
+<variable>                follow集：         , ; = 

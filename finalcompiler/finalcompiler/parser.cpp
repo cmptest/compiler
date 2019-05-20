@@ -19,6 +19,12 @@ bool Base::is_term(string s) {
 }
 
 
+bool is_nonterm(string s) {
+	if (s[0] == '<' && s[s.length() - 1] == '>')
+		return true;
+	return false;
+}
+
 
 
 /**
@@ -155,7 +161,7 @@ void Base::display_firstAndFollow() {
 	fout.open("FirstAndFollow.txt");
 	fout << "文法first集如下：\n";
 	for (map<string, set<string>>::iterator it = first_set.begin(); it != first_set.end(); it++) {
-		fout<< std::left<<setw(20) << (*it).first << setw(20) << " first集：";
+		fout<< std::left<<setw(25) << (*it).first << setw(20) << " first集：";
 		for (set<string>::iterator it2 = first_set[(*it).first].begin(); it2 != first_set[(*it).first].end(); it2++) {
 			fout << *it2 << " ";
 		}
@@ -164,7 +170,7 @@ void Base::display_firstAndFollow() {
 	fout << "+------------------------------------------------------------------------------------------------------------------------------------------+\n\n";
 	fout << "文法follow集如下：\n";
 	for (map<string, set<string>>::iterator it = follow_set.begin(); it != follow_set.end(); it++) {
-		fout << std::left << setw(20) << (*it).first <<setw(20) <<" follow集：";
+		fout << std::left << setw(25) << (*it).first <<setw(20) <<" follow集：";
 		for (set<string>::iterator it2 = follow_set[(*it).first].begin(); it2 != follow_set[(*it).first].end(); it2++) {
 			fout << *it2 << " ";
 		}
@@ -228,11 +234,11 @@ void Base::set_follow(string target) {
 
 
 /**
-  * function   : getTable()
-  * description: 这个方法用于构造分析表
+  * function   : getTopToBottomTable
+  * description: 这个方法用于自上而下构造分析表
   * return	   : map<pair<string, string>, int>>
   */
-map<pair<string, string>, int> Base::getTable() {
+map<pair<string, string>, int> Base::getTopToBottomTable() {
 	for (int i = 0; i < grammer_num; i++) 
 	{
 		for (vector<string>::iterator it0 = grammer[i].right.begin(); it0 != grammer[i].right.end(); it0++) {
@@ -241,7 +247,7 @@ map<pair<string, string>, int> Base::getTable() {
 				pair<string, string> position;
 				position.first = grammer[i].left;
 				position.second = s;
-				analysisTable[position] = i;
+				analysisTable_1[position] = i;
 				break;
 			}
 			else if (s == "@" && (it0+1)== grammer[i].right.end()) {
@@ -249,7 +255,7 @@ map<pair<string, string>, int> Base::getTable() {
 					pair<string, string> position;
 					position.first = grammer[i].left;
 					position.second = *it2;
-					analysisTable[position] = -1;
+					analysisTable_1[position] = -1;
 				}
 				break;
 			}
@@ -261,7 +267,7 @@ map<pair<string, string>, int> Base::getTable() {
 						pair<string, string> position;
 						position.first = grammer[i].left;
 						position.second = *it;
-						analysisTable[position] = i;
+						analysisTable_1[position] = i;
 					}
 					else {
 						flag = true;
@@ -273,11 +279,16 @@ map<pair<string, string>, int> Base::getTable() {
 			}
 
 		}
-
-		
 	}
-	return analysisTable;
+	return analysisTable_1;
 }
+
+
+
+
+
+
+
 
 
 /**
@@ -320,12 +331,12 @@ map<pair<string, string>, int> Base::getTable() {
 
 
 /**
-  * function   : analysis_Exp()
+  * function   : analysis_TopToBottom_Exp()
   * description: 这个方法利用栈分析符号串是否符合语法规范，正确返回0，错误返回行号
   * return	   : int
   * param	   : s
   */
-int Base::analysis_Exp(vector<Token> s) {//分析符号串
+int Base::analysis_TopToBottom_Exp(vector<Token> s) {//分析符号串(自上而下)
 	stack<string> left;
 	int index = 0;
 
@@ -345,9 +356,9 @@ int Base::analysis_Exp(vector<Token> s) {//分析符号串
 			left.pop();
 			index++;
 		}	
-		else if (analysisTable.count(temp) != 0) {
+		else if (analysisTable_1.count(temp) != 0) {
 			left.pop();
-			int i = analysisTable[temp];
+			int i = analysisTable_1[temp];
 			if (i == -1) {
 				continue;//空串
 			}
@@ -372,12 +383,15 @@ int Base::analysis_Exp(vector<Token> s) {//分析符号串
 
 
 
-//vector<string> Base::acceptWords(string filePath) {
-//	ifstream t(filePath);
-//	string line = "";
-//	while (getline(t, line)) //逐行读取属性字
-//	{
-//}
+/**
+  * function   : analysis_BottomToTop_Exp()
+  * description: 这个方法利用栈分析符号串是否符合语法规范，正确返回0，错误返回行号
+  * return	   : int
+  * param	   : s
+  */
+int Base::analysis_BottomToTop_Exp(vector<Token> s) {
+
+}
 
 
 
@@ -397,9 +411,9 @@ void Base::parser(vector<Token> tokenList) {
 	
 	display_firstAndFollow();//打印first集和follow集
 
-	map<pair<string, string>, int> table = getTable();//构建符号表
+	map<pair<string, string>, int> table = getTopToBottomTable();//构建自上而下符号表
 	
-	int flag = analysis_Exp(tokenList);//分析
+	int flag = analysis_BottomToTop_Exp(tokenList);//分析
 	if (flag==0) {
 		cout <<  "符合语法规范" << endl;
 	}

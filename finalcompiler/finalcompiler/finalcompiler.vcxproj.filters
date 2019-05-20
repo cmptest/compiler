@@ -46,5 +46,8 @@
     <Text Include="FirstAndFollow.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="TestGrammer.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
 </Project>

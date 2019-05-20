@@ -1,0 +1,18 @@
+<Begin> -> <program>
+<program> -> int main ( ) { <SS> }
+<SS> -> <SS> <S>
+<SS> -> @
+<S> -> <D> = <E>
+<D> -> <type> <L>
+<type> -> int
+<type> -> float
+<L> -> id, <L>
+<L> -> id
+<E> -> <E> + <T>
+<E> -> <E> - <T>
+<E> -> <T>
+<T> -> <T> * <F>
+<T> -> <T> / <F>
+<F> -> ( <E> )
+<F> -> id
+<F> -> num
