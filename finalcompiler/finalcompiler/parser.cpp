@@ -39,6 +39,9 @@ void Base::scan_grammer(string filePath) {
 	int index = 0;//grammer[100]ÏÂ±ê
 	while (getline(t, line)) //ÖğĞĞ¶ÁÈ¡ÎÄ·¨
 	{
+		while (line[line.length() - 1] == ' ') {	//É¾³ıĞĞÎ²µÄ¿Õ¸ñ
+			line = line.substr(0,line.length()-1);
+		}
 		line += " ";
 		bool isleft = true;//ÊÇ·ñÊÇÎÄ·¨×ó²¿
 		for (int i = 0, j = 0; i < line.length();) {//Í¨¹ı¿Õ¸ñ·Ö¸îÎÄ·¨×Ö·û´®
@@ -69,7 +72,7 @@ void Base::scan_grammer(string filePath) {
 			//ÎÄ·¨ÓÒ²¿
 			else if (line[i] == ' ' && !isleft) {
 				string temp = line.substr(j, i-j);
-				grammer[index].right.push_back( temp);
+				grammer[index].right.push_back(temp);
 				j = i + 1;
 				i++;
 			}
@@ -612,11 +615,8 @@ void Base::generateSL0Table() {
 				}
 			}
 			else if (currentNode.index == currentNode.right.size()) {
-<<<<<<< HEAD
 				set_follow(currentNode.left);
-=======
 				//set_follow(currentNode.left);
->>>>>>> æœ€æ–°
 				set<string> s = follow_set[currentNode.left];
 				for (set<string>::iterator it = s.begin(); it != s.end(); it++) {
 					int id;
@@ -678,41 +678,47 @@ void Base::printSL0Table() {
 		SL0Table.push_back(vec);
 	}
 
-	cout << setw(6) << setfill(' ') << "×´Ì¬";
+	cout << setw(10) << setfill(' ') << "×´Ì¬";
 	for (int j = 0; j < symbol.size(); j++) {
-		cout << setw(6) << setfill(' ') << symbol[j];
+		cout << setw(10) << setfill(' ') << symbol[j];
 	}
 	cout << endl;
 	for (int i = 0; i < SL0Table.size(); i++) {
-		cout << setw(6) << setfill(' ') << i;
+		cout << setw(10) << setfill(' ') << i;
 		for (int j = 0; j < SL0Table[j].size(); j++) {
-			cout << setw(6) << setfill(' ') <<SL0Table[i][j];
+			cout << setw(10) << setfill(' ') <<SL0Table[i][j];
 		}
 		cout << endl;
 	}
 }
 
 void Base::generate_FirstAndFollow() {
+	
+	ofstream fout;
+	fout.open("FirstAndFollow.txt");
 	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
 		set_first(*it);
 	}
 	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
 		set_follow(*it);
 	}
-	cout << "first¼¯" << endl;
+	fout << "first¼¯" << endl;
+	
 	for (map<string, set<string>>::iterator it = first_set.begin(); it != first_set.end(); it++) {
-		cout << it->first << ":" << endl;
+		fout << std::left << setw(25) << it->first +":";
 		for (set<string>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++) {
-			cout << *it2 << " ";
+			fout << *it2 << " ";
 		}
-		cout << endl;
+		fout << endl;
 	}
-	cout << "follow¼¯" << endl;
+
+	fout << "+-----------------------------------------------------------------------------------------+\n";
+	fout << "follow¼¯" << endl;
 	for (map<string, set<string>>::iterator it = follow_set.begin(); it != follow_set.end(); it++) {
-		cout << it->first << ":" << endl;
+		fout << std::left << setw(25) << it->first + ":";
 		for (set<string>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++) {
-			cout << *it2 << " ";
+			fout << *it2 << " ";
 		}
-		cout << endl;
+		fout << endl;
 	}
 }

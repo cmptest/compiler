@@ -1,16 +1,17 @@
-<Begin> -> <E>
-<<<<<<< HEAD
-<E> -> <E> + <T>
-<E> -> <T>
-<T> -> <T> * <F>
-<T> -> <F>
-=======
-<E> -> <T> <E">
-<E"> -> + <T> <E">
-<E"> -> @ 
-<T> -> <F> <T">
-<T"> -> * <F> <T">
-<T"> -> @
->>>>>>> 最新
-<F> -> ( <E> )
-<F> -> id
+<S> -> <obj>
+<obj> -> { }
+<obj> -> { <members> }
+<members> -> <pair>
+<members> -> <pair> , <members>
+<pair> -> string : <value>
+<array> -> [ ]
+<array> -> [ <elements> ]
+<elements> -> <value>
+<elements> -> <value> , <elements> 
+<value> -> string
+<value> -> num
+<value> -> <obj>
+<value> -> <array>
+<value> -> true
+<value> -> false
+<value> -> null

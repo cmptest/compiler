@@ -68,7 +68,7 @@ public:
 	void set_first(string target);//求出指定非终结符号的first集
 	void set_follow(string target);//求出指定非终结符号的follow集
 
-	void display_firstAndFollow();//打印first集
+	void display_firstAndFollow();//打印first集和follow集
 	//void display_table();//打印分析表
 
 	//求first,follow并打印
