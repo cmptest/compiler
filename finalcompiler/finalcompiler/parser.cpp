@@ -612,7 +612,11 @@ void Base::generateSL0Table() {
 				}
 			}
 			else if (currentNode.index == currentNode.right.size()) {
+<<<<<<< HEAD
 				set_follow(currentNode.left);
+=======
+				//set_follow(currentNode.left);
+>>>>>>> 最新
 				set<string> s = follow_set[currentNode.left];
 				for (set<string>::iterator it = s.begin(); it != s.end(); it++) {
 					int id;
