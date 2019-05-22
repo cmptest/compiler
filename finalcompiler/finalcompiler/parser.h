@@ -35,8 +35,8 @@ struct I {
 	int id;				//项目集号
 	vector<node> vec;   //项目集
 	map<string, int> m; //转化关系
-	int num;			//项目集主文法的数目，可以由主文法推出所有文法
 };
+
 
 class Base{
 
@@ -55,6 +55,9 @@ private:
 
 	map<pair<string, string>, int>analysisTable_1;//自上而下分析表 (<文法左部, 终结符号+&>, 产生式下标)
 
+	map<pair<int, string>, pair<string, int>> ACTION;
+	map<pair<int, string>, int> GOTO;
+
 public:
 
 
@@ -68,7 +71,8 @@ public:
 	void display_firstAndFollow();//打印first集
 	//void display_table();//打印分析表
 
-	bool is_existTheI(vector<node> v,int & tmpid );
+	//求first,follow并打印
+	void generate_FirstAndFollow();
 
 	// TODO 由文法生成项目集规范簇
 	void generateProjectSet();
@@ -76,6 +80,9 @@ public:
 	void printI(I pi);
 
 	// TODO 分析表
+	void generateSL0Table();
+
+	void printSL0Table();
 	
 
 	map<pair<string, string>, int> getTopToBottomTable();//构造自上而下分析表

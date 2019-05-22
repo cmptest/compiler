@@ -421,6 +421,9 @@ void Base::parser(vector<Token> tokenList) {
 	//	cout<<"第"<<flag<<"行不符合语法规范" << endl;
 }
 
+bool judgeIs_SameVecOfNode(vector<node> tmp, vector<node> v);
+bool judgeIs_SameVecOfString(vector<string> tmps, vector<string> vs);
+
 //由文法生成项目集簇
 void Base:: generateProjectSet() {
 	//当前项目集
@@ -428,10 +431,15 @@ void Base:: generateProjectSet() {
 	int id = 0;
 	tmp.id = id;
 	id++;
-	tmp.num = 1;
 	tmp.vec.push_back(grammer[0]);
 	queue<I> que;//等待完成的项目集队列
 	que.push(tmp);
+
+	vector<vector<node> > vecv;//
+	vecv.push_back(tmp.vec);
+	map<int, vector<node> > mapvi;
+	mapvi[tmp.id] = tmp.vec;
+
 	while (!que.empty()) {
 		tmp = que.front();
 		que.pop();
@@ -484,20 +492,33 @@ void Base:: generateProjectSet() {
 					}
 				}
 				//判断是否已生成该项目集，否则生成新项目集加到projectSet里面
-				int tmpid = 0;
-				if (is_existTheI(mainGrammerOfProjectSet,tmpid)) {
-					cout << "*******" << tmpid << "*******" << endl;
-					tmp.m[s] = tmpid;
+				bool exist = false;
+				for (int j = 0; j < vecv.size(); j++) {
+					if (judgeIs_SameVecOfNode(vecv[j], mainGrammerOfProjectSet)) {
+						exist = true;
+						break;
+					}
+				}
+				if (exist) {
+					int id = -1;
+					for (map<int, vector<node> >::iterator it = mapvi.begin(); it != mapvi.end(); it++) {
+						if (judgeIs_SameVecOfNode(it->second, mainGrammerOfProjectSet)) {
+							id = it->first;
+							break;
+						}
+					}
+					if (id == -1) cout << "mapvi错误" << endl;
+					tmp.m[s] = id;
 				}
 				else {
 					I newI;
 					newI.id = id;
-					cout << "*******" << id << "*******" << endl;
+					tmp.m[s] = newI.id;
 					id++;
 					newI.vec = mainGrammerOfProjectSet;
-					newI.num = mainGrammerOfProjectSet.size();
 					que.push(newI);
-					tmp.m[s] = newI.id;
+					vecv.push_back(mainGrammerOfProjectSet);
+					mapvi[newI.id] = mainGrammerOfProjectSet;
 				}
 			}
 		}
@@ -524,20 +545,25 @@ void Base::printI(I pi) {
 	cout << endl;
 }
 
-bool judgeIs_SameVecOfNode(vector<node> tmp, vector<node> v);
-bool judgeIs_SameVecOfString(vector<string> tmps, vector<string> vs);
 
-bool Base::is_existTheI(vector<node> v,int & tmpid) {
-	for (int i = 0; i < projectSet.size(); i++) {
-		vector<node> tmp(projectSet[i].vec.begin(), projectSet[i].vec.begin() + projectSet[i].num); //tmp.num和v size一样后 判断tmp和v是不是完全一样
-		if (judgeIs_SameVecOfNode(tmp, v)) {
-			tmpid = projectSet[i].id;
-			return true;
-		}
-	}
-	return false;
-}
 
+//bool Base::is_existTheI(vector<node> v,int & tmpid,I tmp) {
+//	vector<node> vec(tmp.vec.begin(),tmp.vec.begin() + tmp.num); //tmp.num和v size一样后 判断tmp和v是不是完全一样
+//	if (judgeIs_SameVecOfNode(vec, v)) {
+//		tmpid = tmp.id;
+//		return true;
+//	}
+//
+//	for (int i = 0; i < projectSet.size(); i++) {
+//		vector<node> tmp(projectSet[i].vec.begin(), projectSet[i].vec.begin() + projectSet[i].num); //tmp.num和v size一样后 判断tmp和v是不是完全一样
+//		if (judgeIs_SameVecOfNode(tmp, v)) {
+//			tmpid = projectSet[i].id;
+//			return true;
+//		}
+//	}
+//	return false;
+//}
+//便利函数
 bool judgeIs_SameVecOfNode(vector<node> tmp, vector<node> v) {
 	if (tmp.size() != v.size()) return false;
 	for (int j = 0; j < v.size(); j++) {//遍历一遍v，看看tmp里有没有v[j]
@@ -557,7 +583,7 @@ bool judgeIs_SameVecOfNode(vector<node> tmp, vector<node> v) {
 	}
 	return true;
 }
-
+//便利函数
 bool judgeIs_SameVecOfString(vector<string> tmps, vector<string> vs) {
 	if (tmps.size() == vs.size()) {
 		for (int z = 0; z < tmps.size(); z++) {
@@ -568,4 +594,121 @@ bool judgeIs_SameVecOfString(vector<string> tmps, vector<string> vs) {
 		return true;
 	}
 	return false;
+}
+
+void Base::generateSL0Table() {
+	for (int i = 0; i < projectSet.size(); i++) {
+		I currentI = projectSet[i];
+		for (int j = 0; j < currentI.vec.size(); j++) {
+			node currentNode = currentI.vec[j];
+			if (currentNode.index == 1 && currentNode.left == grammer[0].left &&
+				currentNode.right.size() == 1 && currentNode.right[0] == grammer[0].right[0]) {
+				ACTION[make_pair(currentI.id, "$")] = make_pair("acc", -1);
+			}
+			if (currentNode.index < currentNode.right.size()) {
+				string a = currentNode.right[currentNode.index];
+				if (is_term(a) && currentI.m.count(a) != 0) {
+					ACTION[make_pair(currentI.id, a)] = make_pair("s", currentI.m[a]);
+				}
+			}
+			else if (currentNode.index == currentNode.right.size()) {
+				set_follow(currentNode.left);
+				set<string> s = follow_set[currentNode.left];
+				for (set<string>::iterator it = s.begin(); it != s.end(); it++) {
+					int id;
+					//寻找规约产生式的id；
+					for (id = 0; id < grammer_num; id++) {
+						if (currentNode.left == grammer[id].left &&
+							judgeIs_SameVecOfString(currentNode.right, grammer[id].right)) break;
+					}
+					if (id == grammer_num) cout << "没有找到归约产生式" << endl;
+					ACTION[make_pair(currentI.id, *it)] = make_pair("r", id);
+				}
+			}
+		}
+		for (map<string, int>::iterator it = currentI.m.begin(); it != currentI.m.end(); it++) {
+			if (!is_term(it->first)) {
+				GOTO[make_pair(currentI.id, it->first)] = it->second;
+			}
+		}
+	}
+}
+
+void Base::printSL0Table() {
+	vector<vector<string>> SL0Table;
+	int id = 0;
+	vector<string> symbol;
+	//symbol.push_back("状态");
+	map<string, int> symbolToId;
+	for (set<string>::iterator it = term.begin(); it != term.end(); it++) {
+		symbol.push_back(*it);
+		symbolToId[*it] = id;
+		id += 1;
+	}
+	symbol.push_back("$");
+	symbolToId["$"] = id;
+	id += 1;
+	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
+		symbol.push_back(*it);
+		symbolToId[*it] = id;
+		id += 1;
+	}
+	//SL0Table.push_back(symbol);
+	for (int i = 0; i < projectSet.size(); i++) {
+		vector<string> vec;
+		for (int j = 0;j<term.size()+1;j++) {
+			if (ACTION.count(make_pair(i, symbol[j])) != 0) {
+				pair<string,int> p = ACTION[make_pair(i, symbol[j])];
+				if (p.first == "acc") vec.push_back(p.first);
+				else vec.push_back(p.first+to_string(p.second));
+			}
+			else vec.push_back(" ");
+		}
+
+		for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
+			if (GOTO.count(make_pair(i, *it)) != 0) {
+				vec.push_back(to_string(GOTO[make_pair(i, *it)]));
+			}
+			else vec.push_back(" ");
+		}
+		SL0Table.push_back(vec);
+	}
+
+	cout << setw(6) << setfill(' ') << "状态";
+	for (int j = 0; j < symbol.size(); j++) {
+		cout << setw(6) << setfill(' ') << symbol[j];
+	}
+	cout << endl;
+	for (int i = 0; i < SL0Table.size(); i++) {
+		cout << setw(6) << setfill(' ') << i;
+		for (int j = 0; j < SL0Table[j].size(); j++) {
+			cout << setw(6) << setfill(' ') <<SL0Table[i][j];
+		}
+		cout << endl;
+	}
+}
+
+void Base::generate_FirstAndFollow() {
+	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
+		set_first(*it);
+	}
+	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
+		set_follow(*it);
+	}
+	cout << "first集" << endl;
+	for (map<string, set<string>>::iterator it = first_set.begin(); it != first_set.end(); it++) {
+		cout << it->first << ":" << endl;
+		for (set<string>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++) {
+			cout << *it2 << " ";
+		}
+		cout << endl;
+	}
+	cout << "follow集" << endl;
+	for (map<string, set<string>>::iterator it = follow_set.begin(); it != follow_set.end(); it++) {
+		cout << it->first << ":" << endl;
+		for (set<string>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++) {
+			cout << *it2 << " ";
+		}
+		cout << endl;
+	}
 }

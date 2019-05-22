@@ -49,5 +49,11 @@
     <Text Include="TestGrammer.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="NoRecursiveGrammer.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="Test.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
 </Project>
