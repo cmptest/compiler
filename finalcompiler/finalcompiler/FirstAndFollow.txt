@@ -1,5 +1,5 @@
 first¼¯
-<S>:                     { 
+<Begin>:                 { 
 <array>:                 [ 
 <elements>:              [ false null num string true { 
 <members>:               string 
@@ -8,7 +8,10 @@ first¼¯
 <value>:                 [ false null num string true { 
 +-----------------------------------------------------------------------------------------+
 follow¼¯
-<elements>:               ] 
+<Begin>:                 $ 
+<array>:                 , ] } 
+<elements>:              ] 
 <members>:               } 
-<pair>:                  , 
-<value>:                  , 
+<obj>:                   $ , ] } 
+<pair>:                  , } 
+<value>:                 , ] } 

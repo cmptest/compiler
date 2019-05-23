@@ -1,4 +1,4 @@
-<S> -> <obj>
+<Begin> -> <obj>
 <obj> -> { }
 <obj> -> { <members> }
 <members> -> <pair>

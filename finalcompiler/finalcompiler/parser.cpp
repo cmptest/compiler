@@ -91,8 +91,10 @@ void Base::scan_grammer(string filePath) {
 		for (vector<string>::iterator it = grammer[i].right.begin(); it!= grammer[i].right.end(); it++) {
 			if (is_term(*it))
 				term.insert(*it);//插入终结符号
-			else
-				non_term.insert(*it);//插入非终结符号
+			else {
+				if(*it!="@")
+					non_term.insert(*it);//插入非终结符号
+			}
 		}
 	}
 
@@ -201,9 +203,11 @@ void Base::set_follow(string target) {
 		}
 		if (flag) {
 			//右边为空串
-			if (it == grammer[i].right.end()) {
-				set_follow(grammer[i].left);
-				follow_set[*it] = follow_set[grammer[i].left];
+			if ((it+1) == grammer[i].right.end()) {
+				if (*it != grammer[i].left) {
+					set_follow(grammer[i].left);
+					set_union(follow_set[*it].begin(), follow_set[*it].end(), follow_set[grammer[i].left].begin(), follow_set[grammer[i].left].end(), inserter(follow_set[*it], follow_set[*it].begin())); // 求并集
+				}
 			}
 			//右边不为空
 			else {
@@ -226,8 +230,8 @@ void Base::set_follow(string target) {
 			}
 
 		}
-		if (grammer[i].left == "<program>")
-			follow_set["<program>"].insert("$");
+		if (grammer[i].left == "<Begin>")
+			follow_set["<Begin>"].insert("$");
 	}
 }
 
@@ -702,6 +706,7 @@ void Base::generate_FirstAndFollow() {
 	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
 		set_follow(*it);
 	}
+	
 	fout << "first集" << endl;
 	
 	for (map<string, set<string>>::iterator it = first_set.begin(); it != first_set.end(); it++) {
