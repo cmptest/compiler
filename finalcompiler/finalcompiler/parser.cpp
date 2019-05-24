@@ -694,7 +694,30 @@ void Base::printSL0Table() {
 
 //产生first集和follow集，并输出到文件FirstAndFolllow.txt中
 void Base::generate_FirstAndFollow() {
-	ofstream fout;
+	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
+		set_first(*it);
+	}
+	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
+		set_follow(*it);
+	}
+	cout << "first集" << endl;
+	for (map<string, set<string>>::iterator it = first_set.begin(); it != first_set.end(); it++) {
+		cout << std::left << setw(20) << it->first << ":";
+		for (set<string>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++) {
+			cout << *it2 << " ";
+		}
+		cout << endl;
+	}
+	cout << "+-------------------------------------------------------------+\n";
+	cout << "follow集" << endl;
+	for (map<string, set<string>>::iterator it = follow_set.begin(); it != follow_set.end(); it++) {
+		cout << std::left << setw(20) << it->first << ":";
+		for (set<string>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++) {
+			cout << *it2 << " ";
+		}
+		cout << endl;
+	}
+	/*ofstream fout;
 	fout.open("FirstAndFollow.txt");
 	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
 		set_first(*it);
@@ -718,7 +741,7 @@ void Base::generate_FirstAndFollow() {
 			fout << *it2 << " ";
 		}
 		fout << endl;
-	}
+	}*/
 }
 
 void Base::SL0GrammaAnalysis() {
