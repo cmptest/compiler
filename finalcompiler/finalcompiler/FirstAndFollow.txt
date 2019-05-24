@@ -1,17 +1,15 @@
 first¼¯
-<Begin>:                 { 
-<array>:                 [ 
-<elements>:              [ false null num string true { 
-<members>:               string 
-<obj>:                   { 
-<pair>:                  string 
-<value>:                 [ false null num string true { 
-+-----------------------------------------------------------------------------------------+
+<Begin>             :( id 
+<E">                :+ @ 
+<E>                 :( id 
+<F>                 :( id 
+<T">                :* @ 
+<T>                 :( id 
++-------------------------------------------------------------+
 follow¼¯
-<Begin>:                 $ 
-<array>:                 , ] } 
-<elements>:              ] 
-<members>:               } 
-<obj>:                   $ , ] } 
-<pair>:                  , } 
-<value>:                 , ] } 
+<Begin>             :$ 
+<E">                :$ ) 
+<E>                 :$ ) 
+<F>                 :* 
+<T">                :+ 
+<T>                 :+ 

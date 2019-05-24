@@ -14,7 +14,7 @@ bool Base::is_term(string s) {
 	if (s[0] == '<' && s[s.length() - 1] == '>')
 		return false;
 	else if (s == "@")
-		return false;
+		return true;
 	return true;
 }
 
@@ -39,9 +39,6 @@ void Base::scan_grammer(string filePath) {
 	int index = 0;//grammer[100]下标
 	while (getline(t, line)) //逐行读取文法
 	{
-		while (line[line.length() - 1] == ' ') {	//删除行尾的空格
-			line = line.substr(0,line.length()-1);
-		}
 		line += " ";
 		bool isleft = true;//是否是文法左部
 		for (int i = 0, j = 0; i < line.length();) {//通过空格分割文法字符串
@@ -72,7 +69,7 @@ void Base::scan_grammer(string filePath) {
 			//文法右部
 			else if (line[i] == ' ' && !isleft) {
 				string temp = line.substr(j, i-j);
-				grammer[index].right.push_back(temp);
+				grammer[index].right.push_back( temp);
 				j = i + 1;
 				i++;
 			}
@@ -91,10 +88,8 @@ void Base::scan_grammer(string filePath) {
 		for (vector<string>::iterator it = grammer[i].right.begin(); it!= grammer[i].right.end(); it++) {
 			if (is_term(*it))
 				term.insert(*it);//插入终结符号
-			else {
-				if(*it!="@")
-					non_term.insert(*it);//插入非终结符号
-			}
+			else
+				non_term.insert(*it);//插入非终结符号
 		}
 	}
 
@@ -120,13 +115,13 @@ void Base::scan_grammer(string filePath) {
   */
 
 void Base::set_first(string target) {
-	
+
 	//匹配文法左部
 	for (int i = 0; i < grammer_num; i++) {
-		if (grammer[i].left == target) {	
+		if (grammer[i].left == target) {
 			int num = grammer[i].right.size();
 			for (vector<string>::iterator it = grammer[i].right.begin(); it != grammer[i].right.end(); it++) {
-				
+
 				//终结符号
 				if (is_term(*it)) {
 					first_set[target].insert(*it);
@@ -144,7 +139,7 @@ void Base::set_first(string target) {
 					set_first(*it);//递归求first集
 					if (first_set[*it].count("@") == 0)//如果这个非终结符号的first集没有@
 					{
-						set_union(first_set[target].begin(), first_set[target].end(), first_set[*it].begin(), first_set[*it].end(),inserter(first_set[target], first_set[target].begin())); // 求并集
+						set_union(first_set[target].begin(), first_set[target].end(), first_set[*it].begin(), first_set[*it].end(), inserter(first_set[target], first_set[target].begin())); // 求并集
 						break;
 					}
 					else {
@@ -189,7 +184,6 @@ void Base::display_firstAndFollow() {
   * description: 这个方法用于求指定非终结符号的follow集
   * param	   : target
   */
-
 void Base::set_follow(string target) {
 	for (int i = 0; i < grammer_num; i++) {
 		bool flag = false;
@@ -203,7 +197,7 @@ void Base::set_follow(string target) {
 		}
 		if (flag) {
 			//右边为空串
-			if ((it+1) == grammer[i].right.end()) {
+			if ((it + 1) == grammer[i].right.end()) {
 				if (*it != grammer[i].left) {
 					set_follow(grammer[i].left);
 					set_union(follow_set[*it].begin(), follow_set[*it].end(), follow_set[grammer[i].left].begin(), follow_set[grammer[i].left].end(), inserter(follow_set[*it], follow_set[*it].begin())); // 求并集
@@ -222,9 +216,9 @@ void Base::set_follow(string target) {
 						set_union(follow_set[*it].begin(), follow_set[*it].end(), first_set[*it2].begin(), first_set[*it2].end(), inserter(follow_set[*it], follow_set[*it].begin())); // 求并集
 						break;
 					}
-					else {						
+					else {
 						set_union(follow_set[*it].begin(), follow_set[*it].end(), first_set[*it2].begin(), first_set[*it2].end(), inserter(follow_set[*it], follow_set[*it].begin())); // 求并集
-						follow_set[*it].emplace("@");
+						follow_set[*it].erase("@");
 					}
 				}
 			}
@@ -234,6 +228,7 @@ void Base::set_follow(string target) {
 			follow_set["<Begin>"].insert("$");
 	}
 }
+
 
 
 
@@ -462,7 +457,7 @@ void Base:: generateProjectSet() {
 				node t = tmp.vec[i];//当前文法；
 				if (t.index < t.right.size()) {//如果点后有文法符号
 					string s = t.right[t.index];
-					if (!is_term(s) && already.count(s)==0 ) {//如果是非终结符号且没被添加
+					if (!is_term(s) && already.count(s)==0) {//如果是非终结符号且没被添加
 						left.insert(t.right[t.index]);//把点后的非终结文法符号加到left里
 					}
 				}
@@ -479,7 +474,7 @@ void Base:: generateProjectSet() {
 		//以上构建完了项目集的文法集，下面构建转化关系
 
 		set<string> stringSet;
-		stringSet.insert("@");
+		//stringSet.insert("@");
 		for (int i = 0; i < tmp.vec.size();i++) {
 			node t = tmp.vec[i];//当前文法；
 			if (t.index < t.right.size()) {//如果点后有文法符号
@@ -498,6 +493,7 @@ void Base:: generateProjectSet() {
 						mainGrammerOfProjectSet.push_back(newT);
 					}
 				}
+				//if (mainGrammerOfProjectSet.size() == 0) continue;
 				//判断是否已生成该项目集，否则生成新项目集加到projectSet里面
 				bool exist = false;
 				for (int j = 0; j < vecv.size(); j++) {
@@ -619,7 +615,6 @@ void Base::generateSL0Table() {
 				}
 			}
 			else if (currentNode.index == currentNode.right.size()) {
-				set_follow(currentNode.left);
 				//set_follow(currentNode.left);
 				set<string> s = follow_set[currentNode.left];
 				for (set<string>::iterator it = s.begin(); it != s.end(); it++) {
@@ -629,6 +624,7 @@ void Base::generateSL0Table() {
 						if (currentNode.left == grammer[id].left &&
 							judgeIs_SameVecOfString(currentNode.right, grammer[id].right)) break;
 					}
+					if (id == 0) continue;//按第一个产生式归约即为acc,不用管
 					if (id == grammer_num) cout << "没有找到归约产生式" << endl;
 					ACTION[make_pair(currentI.id, *it)] = make_pair("r", id);
 				}
@@ -682,22 +678,22 @@ void Base::printSL0Table() {
 		SL0Table.push_back(vec);
 	}
 
-	cout << setw(10) << setfill(' ') << "状态";
+	cout << setw(5) << setfill(' ') << "state";
 	for (int j = 0; j < symbol.size(); j++) {
-		cout << setw(10) << setfill(' ') << symbol[j];
+		cout << setw(5) << setfill(' ') << symbol[j];
 	}
 	cout << endl;
 	for (int i = 0; i < SL0Table.size(); i++) {
-		cout << setw(10) << setfill(' ') << i;
+		cout << setw(5) << setfill(' ') << i;
 		for (int j = 0; j < SL0Table[j].size(); j++) {
-			cout << setw(10) << setfill(' ') <<SL0Table[i][j];
+			cout << setw(5) << setfill(' ') <<SL0Table[i][j];
 		}
 		cout << endl;
 	}
 }
 
+//产生first集和follow集，并输出到文件FirstAndFolllow.txt中
 void Base::generate_FirstAndFollow() {
-	
 	ofstream fout;
 	fout.open("FirstAndFollow.txt");
 	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
@@ -706,24 +702,83 @@ void Base::generate_FirstAndFollow() {
 	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
 		set_follow(*it);
 	}
-	
 	fout << "first集" << endl;
-	
 	for (map<string, set<string>>::iterator it = first_set.begin(); it != first_set.end(); it++) {
-		fout << std::left << setw(25) << it->first +":";
+		fout << std::left <<setw(20) << it->first << ":";
 		for (set<string>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++) {
 			fout << *it2 << " ";
 		}
 		fout << endl;
 	}
-
-	fout << "+-----------------------------------------------------------------------------------------+\n";
+	fout << "+-------------------------------------------------------------+\n";
 	fout << "follow集" << endl;
 	for (map<string, set<string>>::iterator it = follow_set.begin(); it != follow_set.end(); it++) {
-		fout << std::left << setw(25) << it->first + ":";
+		fout <<std::left << setw(20) << it->first << ":";
 		for (set<string>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++) {
 			fout << *it2 << " ";
 		}
 		fout << endl;
+	}
+}
+
+void Base::SL0GrammaAnalysis() {
+	stack<int> idSta;
+	idSta.push(0);
+	vector<Token> vec = words;
+	vec.push_back(Token(0,"$",0));
+	string a = vec[0].value;
+	int i = 1;
+	while (true) {
+		int s = idSta.top();
+		if (ACTION.count(make_pair(s, "@")) != 0) {
+			if (ACTION[make_pair(s, "@")].first == "s") {
+				idSta.push(ACTION[make_pair(s, "@")].second);
+				a = vec[i].value;
+				i++;
+				cout << "移入" << endl;
+			}
+			else if (ACTION[make_pair(s, "@")].first == "r") {
+				int num = ACTION[make_pair(s, "@")].second;
+				int size = grammer[num].right.size();
+				while (size--) idSta.pop();
+				int t = idSta.top();
+				idSta.push(GOTO[make_pair(t, grammer[num].left)]);
+				cout << "根据" << grammer[num].left << "->";
+				for (int j = 0; j < grammer[num].right.size(); j++) {
+					cout << grammer[num].right[j];
+				}
+				cout << "归约" << endl;
+			}
+			else {
+				cout << "错误" << endl;
+				break;
+			}
+		}
+		else if (ACTION[make_pair(s, a)].first == "s") {
+			idSta.push(ACTION[make_pair(s, a)].second);
+			a = vec[i].value;
+			i++;
+			cout << "移入" << endl;
+		}
+		else if (ACTION[make_pair(s, a)].first == "r") {
+			int num = ACTION[make_pair(s, a)].second;
+			int size = grammer[num].right.size();
+			while (size--) idSta.pop();
+			int t = idSta.top();
+			idSta.push(GOTO[make_pair(t, grammer[num].left)]);
+			cout << "根据" << grammer[num].left << "->";
+			for (int j = 0; j < grammer[num].right.size(); j++) {
+				cout << grammer[num].right[j];
+			}
+			cout << "归约" << endl;
+		}
+		else if (ACTION[make_pair(s, a)].first == "acc") {
+			cout << "接受" << endl;
+			break;
+		}
+		else {
+			cout << "错误" << endl;
+			break;
+		}
 	}
 }

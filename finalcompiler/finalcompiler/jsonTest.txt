@@ -1,0 +1,17 @@
+<S> -> <obj>
+<obj> -> { }
+<obj> -> { <members> }
+<members> -> <pair>
+<members> -> <pair> , <members>
+<pair> -> string : <value>
+<array> -> [ ]
+<array> -> [ <elements> ]
+<elements> -> <value>
+<elements> -> <value> , <elements>
+<value> -> string
+<value> -> num
+<value> -> <obj>
+<value> -> <array>
+<value> -> true
+<value> -> false
+<value> -> null

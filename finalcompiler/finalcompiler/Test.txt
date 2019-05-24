@@ -1,17 +1,9 @@
-<Begin> -> <obj>
-<obj> -> { }
-<obj> -> { <members> }
-<members> -> <pair>
-<members> -> <pair> , <members>
-<pair> -> string : <value>
-<array> -> [ ]
-<array> -> [ <elements> ]
-<elements> -> <value>
-<elements> -> <value> , <elements> 
-<value> -> string
-<value> -> num
-<value> -> <obj>
-<value> -> <array>
-<value> -> true
-<value> -> false
-<value> -> null
+<Begin> -> <E>
+<E> -> <T> <E">
+<E"> -> + <T> <E">
+<E"> -> @ 
+<T> -> <F> <T">
+<T"> -> * <F> <T">
+<T"> -> @
+<F> -> ( <E> )
+<F> -> id

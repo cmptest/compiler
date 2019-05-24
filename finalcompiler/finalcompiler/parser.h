@@ -40,7 +40,7 @@ struct I {
 
 class Base{
 
-private:
+public:
 	int grammer_num;//文法数量
 	
 	node grammer[400]; //文法
@@ -58,6 +58,8 @@ private:
 	map<pair<int, string>, pair<string, int>> ACTION;
 	map<pair<int, string>, int> GOTO;
 
+	vector<Token> words;
+
 public:
 
 
@@ -68,7 +70,7 @@ public:
 	void set_first(string target);//求出指定非终结符号的first集
 	void set_follow(string target);//求出指定非终结符号的follow集
 
-	void display_firstAndFollow();//打印first集和follow集
+	void display_firstAndFollow();//打印first集
 	//void display_table();//打印分析表
 
 	//求first,follow并打印
@@ -83,6 +85,8 @@ public:
 	void generateSL0Table();
 
 	void printSL0Table();
+
+	void SL0GrammaAnalysis();
 	
 
 	map<pair<string, string>, int> getTopToBottomTable();//构造自上而下分析表

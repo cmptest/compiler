@@ -127,7 +127,10 @@
     <Text Include="code.txt" />
     <Text Include="FirstAndFollow.txt" />
     <Text Include="grammer.txt" />
+    <Text Include="h.txt" />
+    <Text Include="jsonTest.txt" />
     <Text Include="NoRecursiveGrammer.txt" />
+    <Text Include="out.txt" />
     <Text Include="Test.txt" />
     <Text Include="TestGrammer.txt" />
     <Text Include="words.txt" />

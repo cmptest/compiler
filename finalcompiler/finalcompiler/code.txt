@@ -1,13 +1,5 @@
 int main() {
-	/*jjjj
-
-
-
-*/
-	//jjjj
-
-	int a = 8;
-	int b = 3=l;
-
+	int a = 8,b = 3;
+	a = a+b;
 	return 0;
 }

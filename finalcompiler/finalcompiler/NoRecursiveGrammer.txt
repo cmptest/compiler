@@ -1,6 +1,6 @@
-<Begin> -> <program>
-<program> -> int main ( ) { <SS> }
-<SS> -> <SS> <S>
+<Begin> -> <pro>
+<pro> -> int main ( ) { <SS> }
+<SS> -> <S> <SS>
 <SS> -> @
 <S> -> <D> = <E>
 <D> -> <type> <L>
@@ -8,12 +8,14 @@
 <type> -> float
 <L> -> id , <L>
 <L> -> id
-<E> -> <E> + <T>
-<E> -> <E> - <T>
-<E> -> <T>
-<T> -> <T> * <F>
-<T> -> <T> / <F>
-<T> -> <F>
+<E> -> <T> <E">
+<E"> -> + <T> <E">
+<E"> -> - <T> <E">
+<E"> -> @
+<T> -> <F> <T">
+<T"> -> * <F> <T">
+<T"> -> / <F> <T">
+<T"> -> @
 <F> -> ( <E> )
 <F> -> id
 <F> -> num
