@@ -136,16 +136,21 @@ void Base::set_first(string target) {
 
 				//非终结符号
 				else {
-					set_first(*it);//递归求first集
-					if (first_set[*it].count("@") == 0)//如果这个非终结符号的first集没有@
+					if ((*it) != grammer[i].left)//避免左递归
 					{
-						set_union(first_set[target].begin(), first_set[target].end(), first_set[*it].begin(), first_set[*it].end(), inserter(first_set[target], first_set[target].begin())); // 求并集
+						set_first(*it);//递归求first集
+						if (first_set[*it].count("@") == 0)//如果这个非终结符号的first集没有@
+						{
+							set_union(first_set[target].begin(), first_set[target].end(), first_set[*it].begin(), first_set[*it].end(), inserter(first_set[target], first_set[target].begin())); // 求并集
+							break;
+						}
+						else {
+							set_union(first_set[target].begin(), first_set[target].end(), first_set[*it].begin(), first_set[*it].end(), inserter(first_set[target], first_set[target].begin())); // 求并集
+							first_set[target].erase("@");
+						}
+					}
+					else
 						break;
-					}
-					else {
-						set_union(first_set[target].begin(), first_set[target].end(), first_set[*it].begin(), first_set[*it].end(), inserter(first_set[target], first_set[target].begin())); // 求并集
-						first_set[target].erase("@");
-					}
 				}
 			}
 		}

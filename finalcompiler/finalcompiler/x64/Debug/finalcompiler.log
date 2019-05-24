@@ -1,0 +1,8 @@
+﻿  parser.cpp
+f:\compiler\finalcompiler\finalcompiler\parser.cpp(122): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+f:\compiler\finalcompiler\finalcompiler\parser.cpp(454): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+f:\compiler\finalcompiler\finalcompiler\parser.cpp(459): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+f:\compiler\finalcompiler\finalcompiler\parser.cpp(770): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+f:\compiler\finalcompiler\finalcompiler\parser.cpp(793): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+f:\compiler\finalcompiler\finalcompiler\parser.cpp(389): warning C4715: “Base::analysis_TopToBottom_Exp”: 不是所有的控件路径都返回值
+  finalcompiler.vcxproj -> F:\compiler\finalcompiler\x64\Debug\finalcompiler.exe

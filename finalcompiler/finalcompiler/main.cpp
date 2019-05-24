@@ -17,7 +17,8 @@ int main() {
 	vec.push_back(Token(0, "+", 0));
 	vec.push_back(Token(0, "id", 0));
 	base.words = vec;
-	base.scan_grammer("Test.txt");
+	//base.scan_grammer("Test.txt");
+	base.scan_grammer("h.txt");
 	base.generate_FirstAndFollow();
 	base.generateProjectSet();
 	base.generateSL0Table();
