@@ -1,6 +1,118 @@
 #include "parser.h"
 
+//关键词数目和关键词
+const int keywordnum = 25;
+const string keyword[] = { "break","case","char","const","continue","default","do","double","else","enum",
+"extern","float","for","if","int","long","return","short","sizeof","static","struct","switch","void"
+"unsigned","while","main" };
 
+/**
+  * function   : wordsAnalysis(string filepath)
+  * description: 词法分析，用于从指定路径读取字符串并生成词法单元
+  * param      : filepath
+  * return	   : bool
+  */
+void Base::wordsAnalysis(string filepath) {
+	map<string, int> m;//保存keyword得hashmap
+	ifstream t(filepath);
+	stringstream buffer;
+	buffer << t.rdbuf();
+	string s = buffer.str();
+	//初始化map
+	for (int i = 0; i < keywordnum; i++)
+		m[keyword[i]] = i + 2;
+
+	int n = s.length();
+	int col = 1;
+	for (int i = 0; i < n; i++) {
+
+		if (s[i] == '\n') { col++; continue; }
+		else if (s[i] == ' ' || s[i] == '\t') continue;
+		//剔除注释，// 和/* */
+		if (i < n - 2) {
+			string t = s.substr(i, 2);
+			if (t == "/*") {
+				while (i < n - 2 && !(s[i - 1] == '*' && s[i] == '/')) {
+					i++;
+					if (s[i] == '\n') col++;
+				}
+				if (i == n - 2)
+					words.push_back(Token(-1, "未找到与/*相应的*/", col));
+				continue;
+			}
+			else if (t == "//") {
+				while (i < n - 1 && s[i] != '\n')
+					i++;
+				col++;
+				continue;
+			}
+			else if (t == "++") words.push_back(Token(57, "++", col)), i += 2;
+			else if (t == "--") words.push_back(Token(56, "--", col)), i += 2;
+			else if (t == "+=") words.push_back(Token(29, "+=", col)), i += 2;
+			else if (t == "-=") words.push_back(Token(31, "-=", col)), i += 2;
+			else if (t == "*=") words.push_back(Token(33, "*=", col)), i += 2;
+			else if (t == "/=") words.push_back(Token(35, "/=", col)), i += 2;
+			else if (t == "==") words.push_back(Token(37, "==", col)), i += 2;
+			else if (t == ">=") words.push_back(Token(39, ">=", col)), i += 2;
+			else if (t == ">>") words.push_back(Token(40, ">>", col)), i += 2;
+			else if (t == "<=") words.push_back(Token(42, "<=", col)), i += 2;
+			else if (t == "<<") words.push_back(Token(43, "<<", col)), i += 2;
+		}
+
+		if (isalpha(s[i]) || s[i] == '_') {
+			string t(1, s[i++]);
+			while (isalnum(s[i]) || s[i] == '_') t += s[i++];
+			i--;
+			if (m.count(t)) words.push_back(Token(m[t], t, col));
+			else words.push_back(Token(1, t, col));
+		}
+		else if (isdigit(s[i])) {
+			string t(1, s[i++]);
+			/*while (isalnum(s[i]) || s[i] == '_' || s[i] == '.') t += s[i++];
+			regex r("\\w+day");*/
+
+			int dotnum = 0;//小数点个数
+			while (isdigit(s[i]) || s[i] == '.')
+			{
+				if (s[i] == '.') {
+					dotnum++;
+				}
+				t += s[i++];
+			}
+			i--;
+			if (dotnum == 0) {
+				words.push_back(Token(100, t, col));//整数
+			}
+			else if (dotnum == 1) {
+				words.push_back(Token(101, t, col));//小数
+			}
+			else
+				words.push_back(Token(-1, "数字出错", col));
+		}
+		else if (s[i] == ',') words.push_back(Token(44, ",", col));
+		else if (s[i] == ';') words.push_back(Token(45, ";", col));
+		else if (s[i] == '(') words.push_back(Token(46, "(", col));
+		else if (s[i] == ')') words.push_back(Token(47, ")", col));
+		else if (s[i] == '{') words.push_back(Token(48, "{", col));
+		else if (s[i] == '}') words.push_back(Token(49, "}", col));
+		else if (s[i] == '[') words.push_back(Token(50, "[", col));
+		else if (s[i] == ']') words.push_back(Token(51, "]", col));
+		else if (s[i] == '\'') words.push_back(Token(52, "\'", col));
+		else if (s[i] == '\"') words.push_back(Token(53, "\"", col));
+		else if (s[i] == '+') words.push_back(Token(28, "+", col));
+		else if (s[i] == '-') words.push_back(Token(30, "-", col));
+		else if (s[i] == '*') words.push_back(Token(32, "*", col));
+		else if (s[i] == '/') words.push_back(Token(34, "/", col));
+		else if (s[i] == '>') words.push_back(Token(38, ">", col));
+		else if (s[i] == '<') words.push_back(Token(41, "<", col));
+		else if (s[i] == '=') words.push_back(Token(36, "=", col));
+	}
+	ofstream fout;
+	fout.open("words.txt");
+	for (int i = 0; i < words.size(); i++) {
+		fout << words[i].col << "\t<" << words[i].num << "," << words[i].value << ">\n";
+	}
+}
 
 
 /**
@@ -162,25 +274,24 @@ void Base::set_first(string target) {
   * description: 这个方法用于打印first集和follow集
   */
 void Base::display_firstAndFollow() {
-	ofstream fout;
-	fout.open("FirstAndFollow.txt");
-	fout << "文法first集如下：\n";
+	cout << "文法first集如下：\n";
 	for (map<string, set<string>>::iterator it = first_set.begin(); it != first_set.end(); it++) {
-		fout<< std::left<<setw(25) << (*it).first << setw(20) << " first集：";
+		cout<< std::left<<setw(25) << (*it).first << setw(20) << " first集：";
 		for (set<string>::iterator it2 = first_set[(*it).first].begin(); it2 != first_set[(*it).first].end(); it2++) {
-			fout << *it2 << " ";
+			cout << *it2 << " ";
 		}
-		fout << endl;
+		cout << endl;
 	}
-	fout << "+------------------------------------------------------------------------------------------------------------------------------------------+\n\n";
-	fout << "文法follow集如下：\n";
+	cout << "+------------------------------------------------------------------------------------------------------------------------------------------+\n\n";
+	cout << "文法follow集如下：\n";
 	for (map<string, set<string>>::iterator it = follow_set.begin(); it != follow_set.end(); it++) {
-		fout << std::left << setw(25) << (*it).first <<setw(20) <<" follow集：";
+		cout << std::left << setw(25) << (*it).first <<setw(20) <<" follow集：";
 		for (set<string>::iterator it2 = follow_set[(*it).first].begin(); it2 != follow_set[(*it).first].end(); it2++) {
-			fout << *it2 << " ";
+			cout << *it2 << " ";
 		}
-		fout << endl;
+		cout << endl;
 	}
+	cout << endl << endl;
 }
 
 
@@ -189,6 +300,11 @@ void Base::display_firstAndFollow() {
   * description: 这个方法用于求指定非终结符号的follow集
   * param	   : target
   */
+  /**
+	* function   : set_follow(string target)
+	* description: 这个方法用于求指定非终结符号的follow集
+	* param	   : target
+	*/
 void Base::set_follow(string target) {
 	for (int i = 0; i < grammer_num; i++) {
 		bool flag = false;
@@ -208,6 +324,7 @@ void Base::set_follow(string target) {
 					set_union(follow_set[*it].begin(), follow_set[*it].end(), follow_set[grammer[i].left].begin(), follow_set[grammer[i].left].end(), inserter(follow_set[*it], follow_set[*it].begin())); // 求并集
 				}
 			}
+
 			//右边不为空
 			else {
 				vector<string>::iterator it2;
@@ -223,6 +340,7 @@ void Base::set_follow(string target) {
 					}
 					else {
 						set_union(follow_set[*it].begin(), follow_set[*it].end(), first_set[*it2].begin(), first_set[*it2].end(), inserter(follow_set[*it], follow_set[*it].begin())); // 求并集
+						set_union(follow_set[*it].begin(), follow_set[*it].end(), follow_set[*it2].begin(), follow_set[*it2].end(), inserter(follow_set[*it], follow_set[*it].begin())); // 求并集
 						follow_set[*it].erase("@");
 					}
 				}
@@ -236,34 +354,31 @@ void Base::set_follow(string target) {
 
 
 
-
-
-
-
 /**
   * function   : getTopToBottomTable
   * description: 这个方法用于自上而下构造分析表
   * return	   : map<pair<string, string>, int>>
   */
 map<pair<string, string>, int> Base::getTopToBottomTable() {
-	for (int i = 0; i < grammer_num; i++) 
+	for (int i = 0; i < grammer_num; i++)
 	{
 		for (vector<string>::iterator it0 = grammer[i].right.begin(); it0 != grammer[i].right.end(); it0++) {
 			string s = *it0;
-			if (is_term(s)) {
+			if (is_term(s) && s != "@") {	//终结符号
 				pair<string, string> position;
 				position.first = grammer[i].left;
 				position.second = s;
 				analysisTable_1[position] = i;
 				break;
 			}
-			else if (s == "@" && (it0+1)== grammer[i].right.end()) {
+			else if (s == "@" && (it0 + 1) == grammer[i].right.end()) {
 				for (set<string>::iterator it2 = follow_set[grammer[i].left].begin(); it2 != follow_set[grammer[i].left].end(); it2++) {
 					pair<string, string> position;
 					position.first = grammer[i].left;
 					position.second = *it2;
 					analysisTable_1[position] = -1;
 				}
+				analysisTable_1[make_pair(grammer[i].left, "$")] = -1;
 				break;
 			}
 			else {
@@ -281,7 +396,7 @@ map<pair<string, string>, int> Base::getTopToBottomTable() {
 						continue;
 					}
 				}
-				if(!flag)
+				if (!flag)
 					break;
 			}
 
@@ -292,49 +407,45 @@ map<pair<string, string>, int> Base::getTopToBottomTable() {
 
 
 
-
-
-
-
-
-
 /**
   * function   : display_table
   * description: 这个方法用于打印分析表
   */
-//void Base::display_table() {
-//	set<string>::iterator it1, it2;
-//
-//	for (it1 = term.begin(); it1 != term.end(); it1++) {
-//		cout << setw(20) << *it1;
-//	}
-//	cout << endl;
-//
-//	for (it2 = non_term.begin(); it2 != non_term.end(); it2++) {
-//		for (it1 = term.begin(); it1 != term.end(); it1++)
-//		{
-//			pair<string, string> temp;
-//			temp.first = *it2;
-//			temp.second = *it1;
-//			if (analysisTable.count(temp) == 0) {
-//				cout << setw(20) << "";
-//			}
-//			else {
-//				cout << setw(20);
-//				int i = analysisTable[temp];
-//				if (i == -1) {
-//					cout << setw(20) << "@";
-//				}
-//				else {
-//					for (vector<string>::iterator it = grammer[i].right.begin(); it != grammer[i].right.end(); it++) {
-//						cout << *it;
-//					}
-//				}
-//			}
-//			cout << endl;
-//		}
-//	}
-//}
+void Base::display_Table() {
+	set<string>::iterator it1, it2;
+
+	cout << std::left << setw(15) << "";
+	for (it1 = term.begin(); it1 != term.end(); it1++) {
+		cout << std::left << setw(15) << *it1;
+	}
+	cout << endl;
+
+	for (it2 = non_term.begin(); it2 != non_term.end(); it2++) {
+		cout << std::left << setw(15) << *it2;
+		for (it1 = term.begin(); it1 != term.end(); it1++)
+		{
+			pair<string, string> temp;
+			temp.first = *it2;
+			temp.second = *it1;
+			if (analysisTable_1.count(temp) == 0) {
+				cout << std::left << std::left << setw(15) << "";
+			}
+			else {
+				cout << std::left << setw(15);
+				int i = analysisTable_1[temp];
+				if (i == -1) {
+					cout << std::left << setw(15) << "@";
+				}
+				else {
+					for (vector<string>::iterator it = grammer[i].right.begin(); it != grammer[i].right.end(); it++) {
+						cout << *it;
+					}
+				}
+			}
+		}
+		cout << endl;
+	}
+}
 
 
 /**
@@ -349,56 +460,58 @@ int Base::analysis_TopToBottom_Exp(vector<Token> s) {//分析符号串(自上而下)
 
 	s.push_back(Token(0, "$", s[s.size() - 1].col));
 	left.push("$");
-	left.push("<program>");
+	left.push("<Begin>");
 
-	while (index < s.size()) 
+	while (index < s.size())
 	{
-		string exp = s[index].value; 
+		string exp;
+		if (s[index].num == 1)
+			exp = "id";
+		else if (s[index].num == 100 || s[index].num == 101)
+			exp = "num";
+		else
+			exp = s[index].value;
 		string leftTop = left.top();
 
 		pair<string, string>temp;
 		temp.first = leftTop;
 		temp.second = exp;
-		if (leftTop==exp) {//相等则都出栈
+		if (leftTop == exp) {//相等则都出栈
+			cout << "出栈" << " " << exp << endl;
 			left.pop();
 			index++;
-		}	
+		}
 		else if (analysisTable_1.count(temp) != 0) {
 			left.pop();
 			int i = analysisTable_1[temp];
 			if (i == -1) {
+				cout << temp.first << "->@" << endl;
 				continue;//空串
 			}
 			else {
 				vector<string> exchange = grammer[i].right;
 				vector<string>::iterator it;
-				for (it = exchange.end()-1; it != exchange.begin(); it--) {
+				cout << grammer[i].left << "->";
+				for (it = exchange.begin(); it != exchange.end(); it++) {
+					cout << *it;
+				}
+				cout << endl;
+				for (it = exchange.end() - 1; it != exchange.begin(); it--) {
 					left.push(*it);
 				}
 				left.push(*it);
 			}
 		}
 		else {
+			cout << "错误" << endl;
 			return s[index].col;
 		}
 	}
 
 	if (left.empty())
 		return 0;
-	
+
 }
-
-
-
-/**
-  * function   : analysis_BottomToTop_Exp()
-  * description: 这个方法利用栈分析符号串是否符合语法规范，正确返回0，错误返回行号
-  * return	   : int
-  * param	   : s
-  */
-//int Base::analysis_BottomToTop_Exp(vector<Token> s) {
-//
-//}
 
 
 
@@ -407,31 +520,35 @@ int Base::analysis_TopToBottom_Exp(vector<Token> s) {//分析符号串(自上而下)
   * function   : parser()
   * description: 语法分析
   */
-void Base::parser(vector<Token> tokenList) {
-	scan_grammer("Testgrammer.txt");//扫描文法
-	//for (int i = 0; i < grammer_num; i++) {//求first集
-	//	set_first(grammer[i].left);		
-	//}
-	//for (int i = 0; i < grammer_num; i++) {//求follow集
-	//	set_follow(grammer[i].left);
-	//}
-	//
-	//display_firstAndFollow();//打印first集和follow集
+void Base::parser() {
+	scan_grammer("LL1.txt");//扫描文法
+	for (int i = 0; i < grammer_num; i++) {//求first集
+		set_first(grammer[i].left);		
+	}
+	for (int i = 0; i < grammer_num; i++) {//求follow集
+		set_follow(grammer[i].left);
+	}
+	
+	display_firstAndFollow();//打印first集和follow集
 
-	//map<pair<string, string>, int> table = getTopToBottomTable();//构建自上而下符号表
-	//
-	//int flag = analysis_BottomToTop_Exp(tokenList);//分析
-	//if (flag==0) {
-	//	cout <<  "符合语法规范" << endl;
-	//}
-	//else
-	//	cout<<"第"<<flag<<"行不符合语法规范" << endl;
+	getTopToBottomTable();//构建自上而下符号表
+	
+	int flag = analysis_TopToBottom_Exp(words);//分析
+	if (flag==0) {
+		cout <<  "符合语法规范" << endl;
+	}
+	else
+		cout<<"第"<<flag<<"行不符合语法规范" << endl;
 }
 
 bool judgeIs_SameVecOfNode(vector<node> tmp, vector<node> v);
 bool judgeIs_SameVecOfString(vector<string> tmps, vector<string> vs);
 
-//由文法生成项目集簇
+
+/**
+  * function   : generateProjectSet()
+  * description: 由文法生成项目集族
+  */
 void Base:: generateProjectSet() {
 	//当前项目集
 	I tmp;
@@ -534,7 +651,11 @@ void Base:: generateProjectSet() {
 		projectSet.push_back(tmp);
 	}
 }
-
+/**
+  * function   : printI(I pi)
+  * description: 打印项目集
+  * param :pi
+  */
 void Base::printI(I pi) {
 	cout << "I" << pi.id << endl;
 	vector<node> v = pi.vec;
@@ -722,6 +843,7 @@ void Base::generate_FirstAndFollow() {
 		}
 		cout << endl;
 	}
+	cout << endl << endl;
 	/*ofstream fout;
 	fout.open("FirstAndFollow.txt");
 	for (set<string>::iterator it = non_term.begin(); it != non_term.end(); it++) {
@@ -749,49 +871,191 @@ void Base::generate_FirstAndFollow() {
 	}*/
 }
 
+void printSta(stack<pair<string, Token>> s) {
+	stack<pair<string, Token>> ss;
+	while (!s.empty()) {
+		ss.push(s.top());
+		s.pop();
+	}
+	while (!ss.empty()) {
+		cout << ss.top().first << " ";
+		ss.pop();
+	}
+}
+
+Token ViewInStack(stack<pair<string, Token>> s,int n) {
+	while (n--) {
+		s.pop();
+	}
+	return s.top().second;
+}
+
+
+
 void Base::SL0GrammaAnalysis() {
-	stack<int> idSta;
+	string tempType;//暂时保存类型
+	stack<int> idSta;//储存状态数
 	idSta.push(0);
-	vector<Token> vec = words;
-	vec.push_back(Token(0,"$",0));
+	vector<Token> vec = words;//输入串
 	string a = vec[0].value;
-	int i = 1;
+
+	vector<Token> L;//文法L储存的id名
+	stack<pair<string,Token>> sta;	//储存变量名归约后的符号，id或num，Token等信息
+	vec.push_back(Token(0, "$", 0));
+	
+	map<string,Token> m;//储存m["E"] = Token,用到行号和值
+
+	map<string, string> let;//符号表，储存let["a"] = "int"
+	int index = 0;
+	int T = 0;
 	while (true) {
 		int s = idSta.top();
-		if (ACTION.count(make_pair(s, "@")) != 0) {
-			if (ACTION[make_pair(s, "@")].first == "s") {
-				idSta.push(ACTION[make_pair(s, "@")].second);
-				a = vec[i].value;
-				i++;
-				cout << "移入" << endl;
-			}
-			else if (ACTION[make_pair(s, "@")].first == "r") {
-				int num = ACTION[make_pair(s, "@")].second;
-				int size = grammer[num].right.size();
-				while (size--) idSta.pop();
-				int t = idSta.top();
-				idSta.push(GOTO[make_pair(t, grammer[num].left)]);
-				cout << "根据" << grammer[num].left << "->";
-				for (int j = 0; j < grammer[num].right.size(); j++) {
-					cout << grammer[num].right[j];
-				}
-				cout << "归约" << endl;
-			}
-			else {
-				cout << "错误" << endl;
-				break;
-			}
-		}
-		else if (ACTION[make_pair(s, a)].first == "s") {
+		if (ACTION[make_pair(s, a)].first == "s") {
+			printSta(sta);
 			idSta.push(ACTION[make_pair(s, a)].second);
-			a = vec[i].value;
-			i++;
+			if (vec[index].num == 1)
+				a = "id";
+			else if (vec[index].num == 100) {
+				a = "num";
+				let[vec[index].value] = "int";
+			}
+			else if (vec[index].num == 101) {
+				a = "num";
+				let[vec[index].value] = "float";
+			}
+			else
+				a = vec[index].value;
+			sta.push(make_pair(a,vec[index]));
+			index += 1;
+			
 			cout << "移入" << endl;
+			if (vec[index].num == 1)
+				a = "id";
+			else if (vec[index].num == 100) {
+				a = "num";
+				let[vec[index].value] = "int";
+			}
+			else if (vec[index].num == 101) {
+				a = "num";
+				let[vec[index].value] = "float";
+			}
+			else
+				a = vec[index].value;
 		}
 		else if (ACTION[make_pair(s, a)].first == "r") {
+			printSta(sta);
+
 			int num = ACTION[make_pair(s, a)].second;
 			int size = grammer[num].right.size();
-			while (size--) idSta.pop();
+
+			//语义动作分析
+			
+			if (num == 20 || num == 19) {
+				m["F"] = sta.top().second;
+				m["F"].type = let[sta.top().second.value];
+			}
+			else if (num == 18) {
+				m["F"] = m["E"];
+			}
+			else if (num == 17) {
+				m["T"] = m["F"];
+			}
+			else if (num == 16) {
+				T++;
+				vector<string> s = { "/",m["T"].value,m["F"].value,"T" + to_string(T) };
+				GEN.push_back(s);
+				if (m["F"].type == "float" || m["T"].type == "float")
+					tempType = "float";
+				else
+					tempType = "int";
+				m["T"] = Token(0, "T" + to_string(T), 0);
+				m["T"].type = tempType;
+			}
+			else if (num == 15) {
+				T++;
+				vector<string> s = { "*",m["T"].value,m["F"].value,"T" + to_string(T) };
+				GEN.push_back(s);
+				if (m["F"].type == "float" || m["T"].type == "float")
+					tempType = "float";
+				else
+					tempType = "int";
+				m["T"] = Token(0, "T" + to_string(T), 0);
+				m["T"].type = tempType;
+			}
+			else if (num == 14) {
+				m["E"] = m["T"];
+			}
+			else if (num == 13) {
+				T++;
+				vector<string> s = { "-",m["E"].value,m["T"].value,"T" + to_string(T) };
+				GEN.push_back(s);
+				if (m["E"].type == "float" || m["T"].type == "float")
+					tempType = "float";
+				else
+					tempType = "int";
+				m["E"] = Token(0, "T" + to_string(T), 0);
+				m["E"].type = tempType;
+			}
+			else if (num == 12) {
+				T++;
+				vector<string> s = { "+",m["E"].value,m["T"].value,"T" + to_string(T) };
+				GEN.push_back(s);
+				if (m["E"].type == "float" || m["T"].type == "float")
+					tempType = "float";
+				else
+					tempType = "int";
+				m["E"] = Token(0, "T" + to_string(T), 0);
+				m["E"].type = tempType;
+			}
+			else if (num == 11) {
+				m["L"] = sta.top().second;
+				L.push_back(sta.top().second);
+			}
+			else if (num == 10) {
+				L.push_back(ViewInStack(sta, 2));
+			}
+			else if (num == 9) {
+				m["type"] = Token(0, "float", 0);
+			}
+			else if (num == 8) {
+				m["type"] = Token(0, "int", 0);
+			}
+			else if (num == 7) {
+				m["D"] = m["L"];
+				m["D"].type = let[L[0].value];
+			}
+			else if (num == 6) {
+				m["D"] = m["L"];
+				for (int i = 0; i < L.size(); i++) {
+					if (let.count(L[i].value)) {
+						is_right = false;
+						false_mes = "第" + to_string(L[i].col) + "行：" + L[i].value + "重复声明";
+						return;
+					}
+					let[L[i].value] = m["type"].value;
+				}
+				m["D"].type = m["type"].value;
+			}
+			else if (num == 5) {
+				L.clear();
+			}else if (num == 4) {
+				string s1 = m["E"].type, s2 = m["D"].type;
+				if (s2 == "int" && s1 == "float") {
+					is_right = false;
+					false_mes = "第" + to_string(m["D"].col) + "行，无法将" + s1 + "类型赋值给" + m["D"].value;
+					return;
+				}
+				vector<string> s = { "=",m["E"].value,"_",m["D"].value };
+				GEN.push_back(s);
+				L.clear();
+			}
+
+			while (size--) {
+				idSta.pop();
+				sta.pop();
+			}
+			size = grammer[num].right.size();
+			sta.push(make_pair(grammer[num].left,Token(0,"",0)));
 			int t = idSta.top();
 			idSta.push(GOTO[make_pair(t, grammer[num].left)]);
 			cout << "根据" << grammer[num].left << "->";
@@ -805,8 +1069,19 @@ void Base::SL0GrammaAnalysis() {
 			break;
 		}
 		else {
-			cout << "错误" << endl;
+			cout << "第" << vec[index].col << "行" << vec[index].value << "无法归约" << endl;
 			break;
 		}
 	}
 }
+
+
+
+void Base::printGENOrFalseMes() {
+	cout << endl;
+	for (int i = 0; i < GEN.size(); i++) {
+		cout << "(" << GEN[i][0] << "," << GEN[i][1] << "," << GEN[i][2] << "," << GEN[i][3] << ")" << endl;
+	}
+	if (!is_right) cout << false_mes;
+}
+

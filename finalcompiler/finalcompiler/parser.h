@@ -14,14 +14,14 @@
 #include <iterator>
 #include <iomanip>
 #include <queue>
-#include "wordsAnalysis.h"
+#include <regex>
 using namespace std;
 
 /*
  * node: 产生式
- * left: 产生式左部
- * right:产生式右部
- * index:语法分析时的点
+ * @Param: left -- 产生式左部
+ * @Param: right -- 产生式右部
+ * @Param: index -- 语法分析时的点
  */
 struct node
 {
@@ -30,17 +30,46 @@ struct node
 	int index = 0;
 };
 
-//项目集
+/*
+ * I： 项目集 
+ * @Param: id -- 项目集号
+ * @Param: vec -- 项目集
+ * @Param: m -- 转化关系
+ */
 struct I {
-	int id;				//项目集号
-	vector<node> vec;   //项目集
-	map<string, int> m; //转化关系
+	int id;				
+	vector<node> vec;   
+	map<string, int> m; //
+};
+/*
+ * Token -- 词法单元
+ * @Param: num -- 内部编码,为-1代表错误
+ * @Param: value -- 内码值
+ * @Param: col -- 行号
+ * @Param: type -- 类型，int或float
+ */
+struct Token {
+	int num;      
+	string value; 
+	int col;
+	string type;
+	Token(int _num, string _value, int _col) {
+		num = _num;
+		value = _value;
+		col = _col;
+	}
+	Token(){}
 };
 
 
 class Base{
 
-public:
+private:
+	bool is_right;//编译过程是否报错
+	string false_mes;//报错信息
+	vector<Token> words;//词法分析返回的Token
+	int findIndex(string value);//根据value寻找Token的index
+
 	int grammer_num;//文法数量
 	
 	node grammer[400]; //文法
@@ -55,13 +84,16 @@ public:
 
 	map<pair<string, string>, int>analysisTable_1;//自上而下分析表 (<文法左部, 终结符号+&>, 产生式下标)
 
-	map<pair<int, string>, pair<string, int>> ACTION;
-	map<pair<int, string>, int> GOTO;
+	map<pair<int, string>, pair<string, int>> ACTION; //ACTION函数
+	map<pair<int, string>, int> GOTO;				  //GOTO函数
 
-	vector<Token> words;
+	vector<vector<string> > GEN;					 //生成的四元式
+
+	
 
 public:
-
+	//主函数直接调用词法分析函数,is_store,是否讲结果保存再txt文件中
+	void wordsAnalysis(string source_code); 
 
 	void scan_grammer(string filePath);//读取文法;
 
@@ -71,7 +103,7 @@ public:
 	void set_follow(string target);//求出指定非终结符号的follow集
 
 	void display_firstAndFollow();//打印first集
-	//void display_table();//打印分析表
+	void display_Table();//打印分析表
 
 	//求first,follow并打印
 	void generate_FirstAndFollow();
@@ -87,17 +119,16 @@ public:
 	void printSL0Table();
 
 	void SL0GrammaAnalysis();
+
+	void printGENOrFalseMes();
 	
 
 	map<pair<string, string>, int> getTopToBottomTable();//构造自上而下分析表
 
-	map<pair<string, int>, string> getBottomToTopTable();//构建自下而上分析表
-
 	int analysis_TopToBottom_Exp(vector<Token> s);//分析符号串（自上而下），正确则返回0，错误则返回行号
 
-	int analysis_BottomToTop_Exp(vector<Token> s);//分析符号串（自上而下），正确则返回0，错误则返回行号
 
-	void parser(vector<Token> tokenList);//接收词法分析的token，进行语法分析
+	void parser();//接收词法分析的token，进行语法分析
 };
 
 

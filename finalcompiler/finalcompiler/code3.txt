@@ -1,0 +1,6 @@
+int main(){
+	int a;
+	int b;
+	b = 3 + 4 * 6;
+	a = 1 + 4 * b;
+}

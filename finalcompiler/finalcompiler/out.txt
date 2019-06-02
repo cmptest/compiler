@@ -1,118 +1,357 @@
 first集
-<Begin>             :( id 
-<E>                 :( id 
-<F>                 :( id 
-<T>                 :( id 
+<Begin>             :int 
+<D>                 :float id int 
+<E>                 :( id num 
+<F>                 :( id num 
+<L>                 :id 
+<S>                 :float id int 
+<SS>                :float id int 
+<T>                 :( id num 
+<program>           :int 
+<type>              :float int 
 +-------------------------------------------------------------+
 follow集
 <Begin>             :$ 
-<E>                 :$ ) + 
-<F>                 :$ ) * + 
-<T>                 :$ ) * + 
+<D>                 :; = 
+<E>                 :) + - ; 
+<F>                 :) * + - / ; 
+<L>                 :; = 
+<S>                 :float id int } 
+<SS>                :float id int } 
+<T>                 :) * + - / ; 
+<program>           :$ 
+<type>              :id 
+
+
 I0
-<Begin>->.<E> 
-<E>->.<E> + <T> 
-<E>->.<T> 
-<T>->.<T> * <F> 
-<T>->.<F> 
-<F>->.( <E> ) 
-<F>->.id 
-( 4
-<E> 1
-<F> 3
-<T> 2
-id 5
+<Begin>->.<program> 
+<program>->.int main ( ) { <SS> } 
+<program> 1
+int 2
 
 I1
-<Begin>-><E> .
-<E>-><E> .+ <T> 
-+ 6
+<Begin>-><program> .
 
 I2
-<E>-><T> .
-<T>-><T> .* <F> 
-* 7
+<program>->int .main ( ) { <SS> } 
+main 3
 
 I3
-<T>-><F> .
+<program>->int main .( ) { <SS> } 
+( 4
 
 I4
-<F>->( .<E> ) 
-<E>->.<E> + <T> 
-<E>->.<T> 
-<T>->.<T> * <F> 
-<T>->.<F> 
-<F>->.( <E> ) 
-<F>->.id 
-( 4
-<E> 8
-<F> 3
-<T> 2
-id 5
+<program>->int main ( .) { <SS> } 
+) 5
 
 I5
-<F>->id .
+<program>->int main ( ) .{ <SS> } 
+{ 6
 
 I6
-<E>-><E> + .<T> 
+<program>->int main ( ) { .<SS> } 
+<SS>->.<SS> <S> 
+<SS>->.<S> 
+<S>->.<D> = <E> ; 
+<S>->.<D> ; 
+<D>->.<type> <L> 
+<D>->.<L> 
+<L>->.id , <L> 
+<L>->.id 
+<type>->.int 
+<type>->.float 
+<D> 9
+<L> 11
+<S> 8
+<SS> 7
+<type> 10
+float 14
+id 12
+int 13
+
+I7
+<program>->int main ( ) { <SS> .} 
+<SS>-><SS> .<S> 
+<S>->.<D> = <E> ; 
+<S>->.<D> ; 
+<D>->.<type> <L> 
+<D>->.<L> 
+<L>->.id , <L> 
+<L>->.id 
+<type>->.int 
+<type>->.float 
+<D> 9
+<L> 11
+<S> 16
+<type> 10
+float 14
+id 12
+int 13
+} 15
+
+I8
+<SS>-><S> .
+
+I9
+<S>-><D> .= <E> ; 
+<S>-><D> .; 
+; 18
+= 17
+
+I10
+<D>-><type> .<L> 
+<L>->.id , <L> 
+<L>->.id 
+<L> 19
+id 12
+
+I11
+<D>-><L> .
+
+I12
+<L>->id ., <L> 
+<L>->id .
+, 20
+
+I13
+<type>->int .
+
+I14
+<type>->float .
+
+I15
+<program>->int main ( ) { <SS> } .
+
+I16
+<SS>-><SS> <S> .
+
+I17
+<S>-><D> = .<E> ; 
+<E>->.<E> + <T> 
+<E>->.<E> - <T> 
+<E>->.<T> 
 <T>->.<T> * <F> 
+<T>->.<T> / <F> 
 <T>->.<F> 
 <F>->.( <E> ) 
 <F>->.id 
-( 4
-<F> 3
-<T> 9
-id 5
+<F>->.num 
+( 24
+<E> 21
+<F> 23
+<T> 22
+id 25
+num 26
 
-I7
+I18
+<S>-><D> ; .
+
+I19
+<D>-><type> <L> .
+
+I20
+<L>->id , .<L> 
+<L>->.id , <L> 
+<L>->.id 
+<L> 27
+id 12
+
+I21
+<S>-><D> = <E> .; 
+<E>-><E> .+ <T> 
+<E>-><E> .- <T> 
++ 29
+- 30
+; 28
+
+I22
+<E>-><T> .
+<T>-><T> .* <F> 
+<T>-><T> ./ <F> 
+* 31
+/ 32
+
+I23
+<T>-><F> .
+
+I24
+<F>->( .<E> ) 
+<E>->.<E> + <T> 
+<E>->.<E> - <T> 
+<E>->.<T> 
+<T>->.<T> * <F> 
+<T>->.<T> / <F> 
+<T>->.<F> 
+<F>->.( <E> ) 
+<F>->.id 
+<F>->.num 
+( 24
+<E> 33
+<F> 23
+<T> 22
+id 25
+num 26
+
+I25
+<F>->id .
+
+I26
+<F>->num .
+
+I27
+<L>->id , <L> .
+
+I28
+<S>-><D> = <E> ; .
+
+I29
+<E>-><E> + .<T> 
+<T>->.<T> * <F> 
+<T>->.<T> / <F> 
+<T>->.<F> 
+<F>->.( <E> ) 
+<F>->.id 
+<F>->.num 
+( 24
+<F> 23
+<T> 34
+id 25
+num 26
+
+I30
+<E>-><E> - .<T> 
+<T>->.<T> * <F> 
+<T>->.<T> / <F> 
+<T>->.<F> 
+<F>->.( <E> ) 
+<F>->.id 
+<F>->.num 
+( 24
+<F> 23
+<T> 35
+id 25
+num 26
+
+I31
 <T>-><T> * .<F> 
 <F>->.( <E> ) 
 <F>->.id 
-( 4
-<F> 10
-id 5
+<F>->.num 
+( 24
+<F> 36
+id 25
+num 26
 
-I8
+I32
+<T>-><T> / .<F> 
+<F>->.( <E> ) 
+<F>->.id 
+<F>->.num 
+( 24
+<F> 37
+id 25
+num 26
+
+I33
 <F>->( <E> .) 
 <E>-><E> .+ <T> 
-) 11
-+ 6
+<E>-><E> .- <T> 
+) 38
++ 29
+- 30
 
-I9
+I34
 <E>-><E> + <T> .
 <T>-><T> .* <F> 
-* 7
+<T>-><T> ./ <F> 
+* 31
+/ 32
 
-I10
+I35
+<E>-><E> - <T> .
+<T>-><T> .* <F> 
+<T>-><T> ./ <F> 
+* 31
+/ 32
+
+I36
 <T>-><T> * <F> .
 
-I11
+I37
+<T>-><T> / <F> .
+
+I38
 <F>->( <E> ) .
 
-state(    )    *    +    id   $    <Begin><E>  <F>  <T>  
-0    s4                  s5             1    3    2    
-1                   s6        acc                      
-2         r2   s7   r2        r2                       
-3         r4   r4   r4        r4                       
-4    s4                  s5             8    3    2    
-5         r6   r6   r6        r6                       
-6    s4                  s5                  3    9    
-7    s4                  s5                  10        
-8         s11       s6                                 
-9         r1   s7   r1        r1                       
-10        r3   r3   r3        r3                       
-11        r5   r5   r5        r5                       
+state(    )    *    +    ,    -    /    ;    =    floatid   int  main num  {    }    $    <Begin><D>  <E>  <F>  <L>  <S>  <SS> <T>  <program><type>
+0                                                           s2                                                                    1         
+1                                                                                    acc                                                    
+2                                                                s3                                                                         
+3    s4                                                                                                                                     
+4         s5                                                                                                                                
+5                                                                          s6                                                               
+6                                                 s14  s12  s13                                9              11   8    7              10   
+7                                                 s14  s12  s13                 s15            9              11   16                  10   
+8                                                 r3   r3   r3                  r3                                                          
+9                                       s18  s17                                                                                            
+10                                                     s12                                                    19                            
+11                                      r7   r7                                                                                             
+12                       s20            r11  r11                                                                                            
+13                                                     r8                                                                                   
+14                                                     r9                                                                                   
+15                                                                                   r1                                                     
+16                                                r2   r2   r2                  r2                                                          
+17   s24                                               s25            s26                           21   23                  22             
+18                                                r5   r5   r5                  r5                                                          
+19                                      r6   r6                                                                                             
+20                                                     s12                                                    27                            
+21                  s29       s30       s28                                                                                                 
+22        r14  s31  r14       r14  s32  r14                                                                                                 
+23        r17  r17  r17       r17  r17  r17                                                                                                 
+24   s24                                               s25            s26                           33   23                  22             
+25        r19  r19  r19       r19  r19  r19                                                                                                 
+26        r20  r20  r20       r20  r20  r20                                                                                                 
+27                                      r10  r10                                                                                            
+28                                                r4   r4   r4                  r4                                                          
+29   s24                                               s25            s26                                23                  34             
+30   s24                                               s25            s26                                23                  35             
+31   s24                                               s25            s26                                36                                 
+32   s24                                               s25            s26                                37                                 
+33        s38       s29       s30                                                                                                           
+34        r12  s31  r12       r12  s32  r12                                                                                                 
+35        r13  s31  r13       r13  s32  r13                                                                                                 
+36        r15  r15  r15       r15  r15  r15                                                                                                 
+37        r16  r16  r16       r16  r16  r16                                                                                                 
+38        r18  r18  r18       r18  r18  r18                                                                                                 
 移入
-根据<F>->id归约
-根据<T>-><F>归约
-移入
-移入
-根据<F>->id归约
-根据<T>-><T>*<F>归约
-根据<E>-><T>归约
-移入
-移入
-根据<F>->id归约
-根据<T>-><F>归约
-根据<E>-><E>+<T>归约
-接受
+int 移入
+int main 移入
+int main ( 移入
+int main ( ) 移入
+int main ( ) { 移入
+int main ( ) { int 根据<type>->int归约
+int main ( ) { <type> 移入
+int main ( ) { <type> id 根据<L>->id归约
+int main ( ) { <type> <L> 根据<D>-><type><L>归约
+int main ( ) { <D> 移入
+int main ( ) { <D> ; 根据<S>-><D>;归约
+int main ( ) { <S> 根据<SS>-><S>归约
+int main ( ) { <SS> 移入
+int main ( ) { <SS> int 根据<type>->int归约
+int main ( ) { <SS> <type> 移入
+int main ( ) { <SS> <type> id 根据<L>->id归约
+int main ( ) { <SS> <type> <L> 根据<D>-><type><L>归约
+int main ( ) { <SS> <D> 移入
+int main ( ) { <SS> <D> ; 根据<S>-><D>;归约
+int main ( ) { <SS> <S> 根据<SS>-><SS><S>归约
+int main ( ) { <SS> 移入
+int main ( ) { <SS> id 根据<L>->id归约
+int main ( ) { <SS> <L> 根据<D>-><L>归约
+int main ( ) { <SS> <D> 移入
+int main ( ) { <SS> <D> = 移入
+int main ( ) { <SS> <D> = num 根据<F>->num归约
+int main ( ) { <SS> <D> = <F> 根据<T>-><F>归约
+int main ( ) { <SS> <D> = <T> 根据<E>-><T>归约
+int main ( ) { <SS> <D> = <E> 移入
+第4行;无法归约
+

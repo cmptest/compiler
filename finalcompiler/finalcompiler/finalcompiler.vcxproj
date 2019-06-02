@@ -117,22 +117,19 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.cpp" />
-    <ClCompile Include="wordsAnalysis.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="parser.h" />
-    <ClInclude Include="wordsAnalysis.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="code.txt" />
-    <Text Include="FirstAndFollow.txt" />
-    <Text Include="grammer.txt" />
-    <Text Include="h.txt" />
+    <Text Include="code1.txt" />
+    <Text Include="code2.txt" />
+    <Text Include="code3.txt" />
+    <Text Include="code4.txt" />
     <Text Include="jsonTest.txt" />
-    <Text Include="NoRecursiveGrammer.txt" />
     <Text Include="out.txt" />
-    <Text Include="Test.txt" />
-    <Text Include="TestGrammer.txt" />
+    <Text Include="LL1.txt" />
+    <Text Include="SLR%281%29.txt" />
     <Text Include="words.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

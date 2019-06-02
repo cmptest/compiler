@@ -1,0 +1,9 @@
+int main(){
+	int a = 0;
+	int b = 7;
+	int c = a + b;
+	int d,e;
+	d = a/7;
+	e = b*3;
+}
+

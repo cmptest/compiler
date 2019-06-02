@@ -18,41 +18,17 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="wordsAnalysis.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="parser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="wordsAnalysis.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="parser.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="grammer.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="code.txt">
-      <Filter>资源文件</Filter>
-    </Text>
     <Text Include="words.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="FirstAndFollow.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="TestGrammer.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="NoRecursiveGrammer.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="Test.txt">
       <Filter>资源文件</Filter>
     </Text>
     <Text Include="jsonTest.txt">
@@ -61,7 +37,22 @@
     <Text Include="out.txt">
       <Filter>资源文件</Filter>
     </Text>
-    <Text Include="h.txt">
+    <Text Include="code1.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="code2.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="code3.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="LL1.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="SLR%281%29.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="code4.txt">
       <Filter>资源文件</Filter>
     </Text>
   </ItemGroup>

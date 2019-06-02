@@ -9,48 +9,22 @@ using namespace std;
 Base base;
 int main() {
 	local
-	//base.words = wordsAnalysis("code.txt", false);
-	vector<Token> vec;
-	vec.push_back(Token(0, "id", 0));
-	vec.push_back(Token(0, "*", 0));
-	vec.push_back(Token(0, "id", 0));
-	vec.push_back(Token(0, "+", 0));
-	vec.push_back(Token(0, "id", 0));
-	base.words = vec;
-	//base.scan_grammer("Test.txt");
-	base.scan_grammer("h.txt");
+
+	//词法分析、自下而上语法分析、语义分析
+	base.wordsAnalysis("code1.txt");
+	base.scan_grammer("SLR(1).txt");
 	base.generate_FirstAndFollow();
 	base.generateProjectSet();
 	base.generateSL0Table();
 	base.printSL0Table();
 	base.SL0GrammaAnalysis();
+	base.printGENOrFalseMes();
+
+
+	//词法分析、自上而下语法分析
+	/*base.wordsAnalysis("code4.txt");
+	base.parser();*/
+
+
 	return 0;
-
-
-	// = wordsAnalysis("code.txt", false);
-	//"NoRecursiveGrammer.txt"
-	//vector<Token> vec;
-	//vec.push_back(Token(0, "id", 0));
-	//vec.push_back(Token(0, "*", 0));
-	//vec.push_back(Token(0, "id", 0));
-	//vec.push_back(Token(0, "+", 0));
-	//vec.push_back(Token(0, "id", 0));
-	//base.words = vec;
-	//base.scan_grammer("h.txt");
-	////base.generate_FirstAndFollow();
-
-	//set<string> s;
-	//s.insert("$");
-	//base.follow_set["<Begin>"] = s;
-	//s.insert(")"); s.insert("+");
-	//base.follow_set["<E>"] = s;
-	//s.insert("*");
-	//base.follow_set["<T>"] = s;
-	//base.follow_set["<F>"] = s;
-
-	//base.generateProjectSet();
-	//base.generateSL0Table();
-	//base.printSL0Table();
-	//base.SL0GrammaAnalysis();
-	//return 0;
 }
